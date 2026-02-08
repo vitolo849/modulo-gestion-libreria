@@ -19,6 +19,8 @@ def main(page: ft.Page):
             content_area.content = ft.Text("Sección de Productos ", size=25)
         elif e.control.data == "membresias":
             content_area.content = ft.Text("Sección de Membresías de Clientes", size=25)
+        elif e.control.data == "Ventas":
+            content_area.content = ft.Text("Sección de ventas", size=25)
         page.update()
 
     # --- BARRA DE NAVEGACIÓN ---
@@ -35,6 +37,14 @@ def main(page: ft.Page):
             ft.ElevatedButton(
                 "Membresias",
                 data="membresias", # Etiqueta para identificar el botón
+                on_click=cambiar_vista,
+                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=0)),
+                width=150,
+                height=60,
+            ),
+            ft.ElevatedButton(
+                "Ventas",
+                data="Ventas",
                 on_click=cambiar_vista,
                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=0)),
                 width=150,
