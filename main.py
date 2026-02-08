@@ -7,7 +7,7 @@ def main(page: ft.Page):
     
     # --- ÁREA DE CONTENIDO ---
     content_area = ft.Container(
-        content=ft.Text("M{odulo de administración y reportes", size=20),
+        content=ft.Text("Módulo de administración y reportes", size=20),
         padding=40,
         alignment=ft.Alignment(-1, -1), 
         expand=True,
