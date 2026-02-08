@@ -1,0 +1,25 @@
+
+1 productos
+...añadir productos
+...inventario de productos
+...recomendados
+
+2 membresias
+...activas
+...histarial
+
+3 Ventas
+...Estadisticas
+...historial
+
+4 clientes
+...ver
+...activos
+
+5 provedores
+...ver provedores
+...historial
+
+5 reportes
+...generar reportes
+
