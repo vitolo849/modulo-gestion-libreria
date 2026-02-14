@@ -13,7 +13,7 @@ def main(page: ft.Page):
         padding=40,
         alignment=ft.Alignment(-1, -1), 
         expand=True,
-        bgcolor=ft.Colors.BLACK
+        bgcolor=ft.Colors.WHITE
     )
     
     
