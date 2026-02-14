@@ -57,6 +57,8 @@ def main(page: ft.Page):
         spacing=0 
     )
     
+    # --- CARGAR CONTROLES ---
+    #
     page.add(
         ft.Column(
             controls=[
