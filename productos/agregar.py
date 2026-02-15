@@ -18,6 +18,12 @@ def view(content_area, ft):
             width=300,
             keyboard_type=ft.KeyboardType.NUMBER,
         ),
+        ft.TextField(
+            label="Stock mínimo",
+            hint_text="Stock mínimo",
+            width=300,
+            keyboard_type=ft.KeyboardType.NUMBER,
+        ),
         ft.ElevatedButton("Guardar", on_click=lambda e: guardar_producto()),
     ], spacing=10)
 
