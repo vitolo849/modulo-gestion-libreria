@@ -90,7 +90,6 @@ def main(page: ft.Page):
                     bgcolor="#741717",
                 ),
                 items=[
-                    ft.PopupMenuItem("Agregar Membresía", data="agregar_membresia", on_click=menu_item_click),
                     ft.PopupMenuItem("Ver Membresías", data="ver_membresias", on_click=menu_item_click),
                 ],
             ),
