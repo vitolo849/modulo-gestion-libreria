@@ -3,17 +3,18 @@ import flet as ft
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
-    page.bgcolor = ft.Colors.GREY_100
+    page.bgcolor = "#741717"
     
     content_area = ft.Container(
         content=ft.Text("Modulo de administración y reportes", size=20),
         padding=40,
         alignment=ft.Alignment(-1, -1), 
         expand=True,
-        bgcolor=ft.Colors.WHITE
+        bgcolor="#CBA68B"
     )
     
     def cambiar_vista(e):
+        # Cambia el contenido del área principal según la sección seleccionada
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
         elif e.control.data == "membresias":
@@ -48,7 +49,7 @@ def main(page: ft.Page):
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor=ft.Colors.BLUE_100,
+                    bgcolor="#741717",
                 ),
                 items=[
                     ft.PopupMenuItem("Agregar Producto", data="agregar_producto", on_click=menu_item_click),
@@ -63,7 +64,7 @@ def main(page: ft.Page):
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor=ft.Colors.GREEN_100,
+                    bgcolor="#741717",
                 ),
                 items=[
                     ft.PopupMenuItem("Agregar Membresía", data="agregar_membresia", on_click=menu_item_click),
@@ -77,7 +78,7 @@ def main(page: ft.Page):
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor=ft.Colors.ORANGE_100,
+                    bgcolor="#741717",
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
