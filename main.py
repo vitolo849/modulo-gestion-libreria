@@ -32,6 +32,7 @@ def main(page: ft.Page):
         accion = e.control.data
         if accion == "agregar_producto":
             agregarProductos(content_area,ft)
+            content_area.alignment= ft.Alignment(0,1)
         elif accion == "eliminar_producto":
             content_area.content = ft.Text("Eliminar producto", size=25)
         elif accion == "ver_productos":
