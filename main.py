@@ -27,6 +27,11 @@ def main(page: ft.Page):
         accion = e.control.data
         if accion == "agregar_producto":
             content_area.content = ft.Text("Agregar nuevo producto", size=25)
+            content_area.content = txt_basico = ft.TextField(
+                label="Nombre",
+                hint_text="Nombre producto",
+                width=300,
+            )
         elif accion == "eliminar_producto":
             content_area.content = ft.Text("Eliminar producto", size=25)
         elif accion == "ver_productos":
