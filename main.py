@@ -3,6 +3,7 @@ from datetime import date, timedelta
 from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
 
 from productos.agregar  import view as agregarProductos
+from productos.inventario  import view as inventariosProductos
 
 
 def main(page: ft.Page):
@@ -13,7 +14,7 @@ def main(page: ft.Page):
     content_area = ft.Container(
         content=ft.Text("Modulo de administración y reportes", size=20),
         padding=40,
-        alignment=ft.Alignment(-1, -1), 
+        alignment=ft.Alignment(0, 0), 
         expand=True,
         bgcolor="#CBA68B"
     )
@@ -37,7 +38,9 @@ def main(page: ft.Page):
         elif accion == "eliminar_producto":
             content_area.content = ft.Text("Eliminar producto", size=25)
         elif accion == "ver_productos":
-            content_area.content = ft.Text("Lista de productos", size=25)
+            content_area.alignment= ft.Alignment(0,0)
+            
+            inventariosProductos(content_area,ft)
         elif accion == "agregar_membresia":
             content_area.content = ft.Text("Agregar nueva membresía", size=25)
         elif accion == "ver_membresias":
@@ -101,7 +104,7 @@ def main(page: ft.Page):
         ft.Column(
             controls=[
                 nav_bar,
-                ft.Divider(height=1, color=ft.Colors.GREY_400),
+                ft.Divider(height=1, color=ft.Colors.BLACK  ),
                 content_area
             ],
             spacing=0,
