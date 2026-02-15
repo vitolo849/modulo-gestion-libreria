@@ -6,6 +6,10 @@ from productos.agregar  import view as agregarProductos
 from productos.inventario  import view as inventariosProductos
 
 
+
+from membresia.agr_membresia import view as agregarMembresia
+
+
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
@@ -42,7 +46,7 @@ def main(page: ft.Page):
             
             inventariosProductos(content_area,ft)
         elif accion == "agregar_membresia":
-            content_area.content = ft.Text("Agregar nueva membresía", size=25)
+            agregarMembresia(content_area,ft)
         elif accion == "ver_membresias":
             content_area.content = ft.Text("Lista de membresías", size=25)
         elif accion == "ver_ventas":
