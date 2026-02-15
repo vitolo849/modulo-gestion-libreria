@@ -23,7 +23,7 @@ def view(content_area, ft):
     # Crear la tabla
     tabla = ft.DataTable(
         columns=[
-            ft.DataColumn(ft.Text("Producto")),
+            ft.DataColumn(ft.Text("Producto"),),
             ft.DataColumn(ft.Text("ISBN")),
             ft.DataColumn(ft.Text("Precio")),
             ft.DataColumn(ft.Text("Stock")),
@@ -31,6 +31,8 @@ def view(content_area, ft):
         rows=filas,
         border=ft.border.all(1, ft.Colors.BLACK),
         border_radius=10,
+        vertical_lines=ft.border.BorderSide(1, ft.Colors.BLACK),
+        horizontal_lines=ft.border.BorderSide(1, ft.Colors.BLACK),
     )
     
     content_area.content = ft.Column([
