@@ -1,4 +1,7 @@
 import flet as ft
+from datetime import date, timedelta
+from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
+
 
 def main(page: ft.Page):
     page.title = "Administración Usuario"
@@ -14,7 +17,7 @@ def main(page: ft.Page):
     )
     
     def cambiar_vista(e):
-        # Cambia el contenido del área principal según la sección seleccionada
+        
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
         elif e.control.data == "membresias":
@@ -108,4 +111,9 @@ def main(page: ft.Page):
     )
 
 if __name__ == "__main__":
+    # Habilitar o deshabilitar los logs de las queries de la base de datos
+    establecer_logs(True)
+
+# Crear una sesión de base de datos
+    session = crear_sesion()
     ft.app(target=main)
