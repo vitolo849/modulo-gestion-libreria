@@ -7,7 +7,7 @@ from productos.inventario  import view as inventariosProductos
 from productos.eliminar import view as eliminarProducto
 from membresia.clientes.agg_cliente import view as agregarCliente
 
-
+from membresia.ver_membresia import view as verMemebresia
 
 from membresia.activas_membresia import view as agregarMembresia
 
@@ -51,10 +51,8 @@ def main(page: ft.Page):
         elif accion == "ver_productos":
             content_area.alignment= ft.Alignment(0,0)
             inventariosProductos(content_area,ft)
-        elif accion == "agregar_membresia":
-            agregarMembresia(content_area,ft)
         elif accion == "ver_membresias":
-            content_area.content = ft.Text("Lista de membresías", size=25)
+            verMemebresia(content_area, ft)
         elif accion == "clientes":
             content_area.content = ft.Text ("seccion de clientes", size=25)
             agregarCliente(content_area,ft)
