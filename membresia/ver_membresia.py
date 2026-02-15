@@ -1,27 +1,27 @@
 def view(content_area, ft):
-    productos = [
-        ["Lhgfhf", "978-3-16-148410-0", "$1200", "15"],
-        ["Moudfgfdgdse gfgd", "978-0-13-110362-8", "$25", "50"],
-        ["gdf dfgdgd", "978-0-596-52068-7", "$45", "30"],
-        ["Mdfgdgonitor dfgd dfgdfgdg", "978-1-4919-1889-0", "$300", "10"],
+    membresias = [
+        ["Ana Pérez", "M-001", "Premium", "2026-08-15"],
+        ["Carlos Ruiz", "M-012", "Básica", "2025-12-01"],
+        ["María López", "M-034", "Estándar", "2026-03-20"],
     ]
 
     def acciones_menu(e):
         print(f"Acción seleccionada sobre {e.control.data}")
 
     filas = []
-    for p in productos:
+    for m in membresias:
         fila = ft.DataRow(
             cells=[
-                ft.DataCell(ft.Text(p[0])),
-                ft.DataCell(ft.Text(p[1])),
-                ft.DataCell(ft.Text(p[2])),
+                ft.DataCell(ft.Text(m[0])),
+                ft.DataCell(ft.Text(m[1])),
+                ft.DataCell(ft.Text(m[2])),
+                ft.DataCell(ft.Text(m[3])),
                 ft.DataCell(
                     ft.PopupMenuButton(
                         items=[
-                            ft.PopupMenuItem("Editar", on_click=acciones_menu, data=p[0]),
-                            ft.PopupMenuItem("Eliminar", on_click=acciones_menu, data=p[0]),
-                            ft.PopupMenuItem("Ver Detalles", on_click=acciones_menu, data=p[0]),
+                            ft.PopupMenuItem("Renovar", on_click=acciones_menu, data=m[1]),
+                            ft.PopupMenuItem("Cancelar", on_click=acciones_menu, data=m[1]),
+                            ft.PopupMenuItem("Ver Detalles", on_click=acciones_menu, data=m[1]),
                         ],
                     )
                 ),
@@ -31,9 +31,10 @@ def view(content_area, ft):
 
     tabla = ft.DataTable(
         columns=[
-            ft.DataColumn(ft.Text("Producto")),
-            ft.DataColumn(ft.Text("ID/ISBN")),
-            ft.DataColumn(ft.Text("Precio")),
+            ft.DataColumn(ft.Text("Nombre")),
+            ft.DataColumn(ft.Text("ID")),
+            ft.DataColumn(ft.Text("Tipo")),
+            ft.DataColumn(ft.Text("Vencimiento")),
             ft.DataColumn(ft.Text("Acciones")),
         ],
         rows=filas,
@@ -43,7 +44,7 @@ def view(content_area, ft):
     )
 
     content_area.content = ft.Column([
-        ft.Text("INVENTARIO DE PRODUCTOS", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("MEMBRESÍAS", size=30, weight=ft.FontWeight.BOLD),
         ft.Container(
             content=ft.Column([tabla], scroll=ft.ScrollMode.AUTO),
             height=500,

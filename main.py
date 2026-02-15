@@ -5,7 +5,7 @@ from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
 from productos.agregar  import view as agregarProductos
 from productos.inventario  import view as inventariosProductos
 from productos.eliminar import view as eliminarProducto
-from membresia.clientes.agg_cliente import view as agregarCliente
+from clientes.clientes.agg_cliente import view as agregarCliente
 
 from membresia.ver_membresia import view as verMemebresia
 
