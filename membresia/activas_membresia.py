@@ -1,3 +1,5 @@
+import flet as ft
+
 def view(content_area, ft):
     nombre = ft.TextField(label="Nombre del Plan", width=350)
     precio = ft.TextField(label="Precio", hint_text="Ej. 19.99", width=200, keyboard_type=ft.KeyboardType.NUMBER)
@@ -11,6 +13,7 @@ def view(content_area, ft):
         ],
         value="mensual",
         label="Periodicidad",
+        
     )
 
     # Beneficios (checklist)
@@ -68,6 +71,7 @@ def view(content_area, ft):
             },
             "color": color_selector.value,
             "icono": icon_selector.value,
+            
         }
 
         # Aquí puedes guardar en archivo/BD. Ahora lo mostramos en un diálogo:
@@ -85,16 +89,19 @@ def view(content_area, ft):
     content_area.content = ft.Column(
         [
             ft.Text("Crear / Configurar Plan de Membresía", size=22),
-            ft.Row([nombre, ft.Column([precio, periodicidad])], alignment=ft.MainAxisAlignment.START),
+            ft.Row([nombre, ft.Column([precio, periodicidad])], alignment=ft.MainAxisAlignment.CENTER),
             ft.Divider(),
             ft.Text("Beneficios", weight=ft.FontWeight.BOLD),
-            ft.Row([descuento_check, descuento_pct], alignment=ft.MainAxisAlignment.START),
-            ft.Row([envio_gratis, libro_mes, acceso_eventos], spacing=20),
-            ft.Row([ft.Text("Límite de uso:"), limite_uso], alignment=ft.MainAxisAlignment.START),
+            ft.Row([descuento_check, descuento_pct], alignment=ft.MainAxisAlignment.CENTER),
+            ft.Row([envio_gratis, libro_mes, acceso_eventos], spacing=20, alignment=ft.MainAxisAlignment.CENTER),
+            ft.Row([ft.Text("Límite de uso:"), limite_uso], alignment=ft.MainAxisAlignment.CENTER),
             ft.Divider(),
-            ft.Row([color_selector, icon_selector], spacing=20),
+            ft.Row([color_selector, icon_selector], spacing=20, alignment=ft.MainAxisAlignment.CENTER),
             ft.Divider(),
             ft.Row([boton_guardar, info], alignment=ft.MainAxisAlignment.START),
         ],
         spacing=12,
-    )
+
+        alignment=ft.Alignment(-1, 0),
+        
+   )

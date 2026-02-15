@@ -4,13 +4,14 @@
 ...inventario de productos
 ...recomendados
 
-2 membresias
+2 membresias (dejar para luego)
 ...activas
 ...histarial
 
 3 Ventas
 ...Estadisticas
 ...historial
+...metodo de pago
 
 4 clientes
 ...ver
