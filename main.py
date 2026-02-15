@@ -4,7 +4,7 @@ from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
 
 from productos.agregar  import view as agregarProductos
 from productos.inventario  import view as inventariosProductos
-from eliminar import view as eliminarProducto
+from productos.eliminar import view as eliminarProducto
 from membresia.clientes.agg_cliente import view as agregarCliente
 
 
@@ -35,6 +35,8 @@ def main(page: ft.Page):
             content_area.content = ft.Text("Sección de ventas", size=25)
         elif e.control.data== "cliente":
             content_area.content = ft.Text("Sección de clientes", size=25)
+        elif e.control.data== "reportes":
+            content_area.content = ft.Text("Sección de clientes", size=25)
         page.update()
     
     def menu_item_click(e):
@@ -55,9 +57,6 @@ def main(page: ft.Page):
             content_area.content = ft.Text("Lista de membresías", size=25)
         elif accion == "clientes":
             content_area.content = ft.Text ("seccion de clientes", size=25)
-        elif accion == "agregar_cliente":
-            content_area.content = ft.Text ("Agregar cliente", size=25)
-            
             agregarCliente(content_area,ft)
         elif accion == "ver_ventas":
             content_area.content = ft.Text("Historial de ventas", size=25)
@@ -69,7 +68,7 @@ def main(page: ft.Page):
         controls=[
             ft.PopupMenuButton(
                 content=ft.Container(
-                    content=ft.Text("Productos", size=16, weight=ft.FontWeight.BOLD),
+                    content=ft.Text("Productos", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
@@ -84,7 +83,7 @@ def main(page: ft.Page):
             
             ft.PopupMenuButton(
                 content=ft.Container(
-                    content=ft.Text("Membresías", size=16, weight=ft.FontWeight.BOLD),
+                    content=ft.Text("Membresías", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
@@ -98,7 +97,7 @@ def main(page: ft.Page):
             
             ft.PopupMenuButton(
                 content=ft.Container(
-                    content=ft.Text("Ventas", size=16, weight=ft.FontWeight.BOLD),
+                    content=ft.Text("Ventas", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
@@ -120,11 +119,20 @@ def main(page: ft.Page):
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Clientes", data="clientes", on_click=menu_item_click),
-                    ft.PopupMenuItem("Agregar Cliente", data="agregar_cliente", on_click=menu_item_click),
-                    ft.PopupMenuItem("Eliminar Cliente", data="eliminar_cliente", on_click=menu_item_click),
-                    ft.PopupMenuItem("Editar Cliente", data="editar_cliente", on_click=menu_item_click),
-                    ft.PopupMenuItem("Reporte de Clientes", data="reporte_clientes", on_click=menu_item_click),
                     ft.PopupMenuItem("Clientes con Membresía Activa", data="clientes_membresia", on_click=menu_item_click),
+                ],                
+            ),
+
+            ft.PopupMenuButton(
+                content=ft.Container(
+                    content=ft.Text("REPORTES", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    width=150,
+                    height=60,
+                    alignment=ft.Alignment(0, 0),
+                    bgcolor="#741717",
+                ),
+                items=[
+                    ft.PopupMenuItem("Clientes", data="reportesClientes", on_click=menu_item_click),
                 ],                
             )
         ],
