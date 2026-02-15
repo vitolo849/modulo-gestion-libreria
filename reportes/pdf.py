@@ -14,7 +14,7 @@ TABLE_DATAejemplo = (
 def getPdfTable(TABLE_DATA):
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Times", size=16)
+    pdf.set_font("Times", size=12)
     
     with pdf.table() as table:
         for data_row in TABLE_DATA:
