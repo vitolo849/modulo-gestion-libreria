@@ -2,63 +2,93 @@ import flet as ft
 
 def main(page: ft.Page):
     page.title = "Administración Usuario"
-    page.padding =0 
-    #page.theme_mode = ft.ThemeMode.LIGHT
+    page.padding = 0
+    page.bgcolor = ft.Colors.GREY_100
     
-    # --- ÁREA DE CONTENIDO ---
     content_area = ft.Container(
-
         content=ft.Text("Modulo de administración y reportes", size=20),
-
         padding=40,
         alignment=ft.Alignment(-1, -1), 
         expand=True,
         bgcolor=ft.Colors.WHITE
     )
     
-    
     def cambiar_vista(e):
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
         elif e.control.data == "membresias":
             content_area.content = ft.Text("Sección de Membresías de Clientes", size=25)
-        elif e.control.data == "Ventas":
+        elif e.control.data == "ventas":
             content_area.content = ft.Text("Sección de ventas", size=25)
         page.update()
+    
+    def menu_item_click(e):
+        accion = e.control.data
+        if accion == "agregar_producto":
+            content_area.content = ft.Text("Agregar nuevo producto", size=25)
+        elif accion == "eliminar_producto":
+            content_area.content = ft.Text("Eliminar producto", size=25)
+        elif accion == "ver_productos":
+            content_area.content = ft.Text("Lista de productos", size=25)
+        elif accion == "agregar_membresia":
+            content_area.content = ft.Text("Agregar nueva membresía", size=25)
+        elif accion == "ver_membresias":
+            content_area.content = ft.Text("Lista de membresías", size=25)
+        elif accion == "ver_ventas":
+            content_area.content = ft.Text("Historial de ventas", size=25)
+        elif accion == "reporte_ventas":
+            content_area.content = ft.Text("Reporte de ventas", size=25)
+        page.update()
 
-    # --- BARRA DE NAVEGACIÓN ---
     nav_bar = ft.Row(
         controls=[
-            ft.ElevatedButton(
-                "Productos",
-                data="productos", 
-                on_click=cambiar_vista,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=0)),
-                width=150,
-                height=60,
+            ft.PopupMenuButton(
+                content=ft.Container(
+                    content=ft.Text("Productos", size=16, weight=ft.FontWeight.BOLD),
+                    width=150,
+                    height=60,
+                    alignment=ft.Alignment(0, 0),
+                    bgcolor=ft.Colors.BLUE_100,
+                ),
+                items=[
+                    ft.PopupMenuItem("Agregar Producto", data="agregar_producto", on_click=menu_item_click),
+                    ft.PopupMenuItem("Eliminar Producto", data="eliminar_producto", on_click=menu_item_click),
+                    ft.PopupMenuItem("Ver Productos", data="ver_productos", on_click=menu_item_click),
+                ],
             ),
-            ft.ElevatedButton(
-                "Membresias",
-                data="membresias", # Etiqueta para identificar el botón
-                on_click=cambiar_vista,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=0)),
-                width=150,
-                height=60,
+            
+            ft.PopupMenuButton(
+                content=ft.Container(
+                    content=ft.Text("Membresías", size=16, weight=ft.FontWeight.BOLD),
+                    width=150,
+                    height=60,
+                    alignment=ft.Alignment(0, 0),
+                    bgcolor=ft.Colors.GREEN_100,
+                ),
+                items=[
+                    ft.PopupMenuItem("Agregar Membresía", data="agregar_membresia", on_click=menu_item_click),
+                    ft.PopupMenuItem("Ver Membresías", data="ver_membresias", on_click=menu_item_click),
+                ],
             ),
-            ft.ElevatedButton(
-                "Ventas",
-                data="Ventas",
-                on_click=cambiar_vista,
-                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=0)),
-                width=150,
-                height=60,
+            
+            ft.PopupMenuButton(
+                content=ft.Container(
+                    content=ft.Text("Ventas", size=16, weight=ft.FontWeight.BOLD),
+                    width=150,
+                    height=60,
+                    alignment=ft.Alignment(0, 0),
+                    bgcolor=ft.Colors.ORANGE_100,
+                ),
+                items=[
+                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
+                    ft.PopupMenuItem("Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
+                ],
             ),
         ],
-        spacing=0 
+        spacing=0,
+        alignment=ft.MainAxisAlignment.START,
     )
     
-    # --- CARGAR CONTROLES ---
-    #
     page.add(
         ft.Column(
             controls=[
@@ -73,4 +103,3 @@ def main(page: ft.Page):
 
 if __name__ == "__main__":
     ft.app(target=main)
-
