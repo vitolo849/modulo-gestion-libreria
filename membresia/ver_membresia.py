@@ -44,12 +44,14 @@ def view(content_area, ft):
     )
 
     content_area.content = ft.Column([
-        ft.Text("MEMBRESÍAS", size=30, weight=ft.FontWeight.BOLD),
-        ft.Container(
-            content=ft.Column([tabla], scroll=ft.ScrollMode.AUTO),
-            height=500,
-            border=ft.border.all(2, "BLACK"),
-            border_radius=5,
-            padding=10,
-        ),
+        ft.Row([ft.Text("MEMBRESÍAS", size=30, weight=ft.FontWeight.BOLD)], alignment=ft.MainAxisAlignment.CENTER),
+        ft.Divider(height=20),
+        ft.Row([ft.Container(content=ft.Column([tabla], scroll=ft.ScrollMode.AUTO),
+        height=500,
+        border=ft.border.all(2, "BLACK"),
+        border_radius=5,
+        padding=10,
+        )],
+        alignment=ft.MainAxisAlignment.CENTER,
+    ),
     ], spacing=10)
