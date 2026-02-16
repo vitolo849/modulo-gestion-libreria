@@ -38,7 +38,7 @@ def view(content_area, ft):
             ft.dropdown.Option("clienteMasGastan", "Clientes que más gastan"),
             ft.dropdown.Option("clienteMasProductos", "Clientes con más productos"),
             ft.dropdown.Option("ranking", "Ranking completo de clientes"),
-            ft.dropdown.Option("periodo", "Clientes top por período"),
+            ft.dropdown.Option("periodo", "Clientes de los ultimos 30 días"),
         ],
     )
     
