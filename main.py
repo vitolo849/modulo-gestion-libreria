@@ -80,7 +80,7 @@ def main(page: ft.Page):
             comprasReportes(content_area, ft)
         #################################################
         page.update()
-
+# la barra de navegación con los botones de productos, membresias, ventas, clientes y reportes
     nav_bar = ft.Row(
         controls=[
             ft.PopupMenuButton(
@@ -116,36 +116,48 @@ def main(page: ft.Page):
             ft.Text("Modulo de administración y reportes",
                     size=15, color="#C7C8CA"),
 
-
             ft.Container(width=100),  # Espaciador para separar los botones
-
+            #boton de membresias
             ft.PopupMenuButton(
 
                 content=ft.Container(
-
-                    content=ft.Text(
-                        "Membresías", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    content=ft.Row(
+                        controls=[
+                            ft.Icon(ft.Icons.CARD_MEMBERSHIP,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Membresías", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=8,
+                    ),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor="#741717",
-
+                    bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem(
-                        "Ver Membresías", data="ver_membresias", on_click=menu_item_click),
-                ],
+                        "Ver Membresías", data="ver_membresias", on_click=menu_item_click), 
+                ]
             ),
-
+            #boton de ventas
             ft.PopupMenuButton(
                 content=ft.Container(
-
-                    content=ft.Text(
-                        "Ventas", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    content=ft.Row(
+                        controls=[
+                            ft.Icon(ft.Icons.SHOPPING_CART,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("ventas", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=8,
+                    ),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor="#741717",
+                    bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem(
@@ -154,34 +166,49 @@ def main(page: ft.Page):
                         "Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
-
+            #
             ft.PopupMenuButton(
                 content=ft.Container(
-
-                    content=ft.Text(
-                        "Clientes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    content=ft.Row(
+                        controls=[
+                            ft.Icon(ft.Icons.PERSON,
+                                    color=ft.Colors.WHITE, size=20),    
+                            ft.Text("Clientes", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=8,
+                    ),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor="#741717",
+                    bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem(
-                        "Ver Clientes", data="clientes", on_click=menu_item_click),
-                    ft.PopupMenuItem("Clientes con Membresía Activa",
-                                     data="clientes_membresia", on_click=menu_item_click),
+                        "Ver Clientes", data="ver_clientes", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Reporte de Clientes", data="reporte_clientes", on_click=menu_item_click),
                 ],
             ),
-
+                 
             ft.PopupMenuButton(
                 content=ft.Container(
-
-                    content=ft.Text(
-                        "Reportes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                    content=ft.Row(
+                        controls=[
+                            ft.Icon(ft.Icons.BAR_CHART,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Reportes", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=8,
+                    ),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
-                    bgcolor="#741717",
+                    bgcolor="#741717"
+                   
                 ),
                 items=[
                     ft.PopupMenuItem(
@@ -199,7 +226,8 @@ def main(page: ft.Page):
         alignment=ft.MainAxisAlignment.START,
 
     )
-
+    
+    
     page.add(
         ft.Column(
             controls=[
