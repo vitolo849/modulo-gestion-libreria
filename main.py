@@ -11,7 +11,12 @@ from clientes.agg_cliente import view as agregarCliente
 from membresia.ver_membresia import view as verMemebresia
 
 from membresia.activas_membresia import view as agregarMembresia
+
+## Importación de sección de reportes 
 from reportes.clientes import view as clientesReportes
+from reportes.compras import view as comprasReportes
+from reportes.ventas import view as ventasReportes
+from reportes.proveedores import view as proveedoresReportes
 
 
 def main(page: ft.Page):
@@ -63,8 +68,17 @@ def main(page: ft.Page):
             content_area.content = ft.Text("Historial de ventas", size=25)
         elif accion == "reporte_ventas":
             content_area.content = ft.Text("Reporte de ventas", size=25)
+        ###############################################
+        ##Menu de reprotes
         elif accion == "reportesClientes":
             clientesReportes(content_area, ft)
+        elif accion == "reportesVentas":
+            ventasReportes(content_area, ft)
+        elif accion == "reportesProveedores":
+            proveedoresReportes(content_area, ft)
+        elif accion == "reportesCompras":
+            comprasReportes(content_area, ft)
+        #################################################
         page.update()
 
     nav_bar = ft.Row(
@@ -172,6 +186,12 @@ def main(page: ft.Page):
                 items=[
                     ft.PopupMenuItem(
                         "Clientes", data="reportesClientes", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Ventas", data="reportesVentas", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Compras", data="reportesCompras", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Proveedores", data="reportesProveedores", on_click=menu_item_click),
                 ],
             )
         ],
