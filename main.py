@@ -1,4 +1,5 @@
 import flet as ft
+
 from datetime import date, timedelta
 from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
 
@@ -68,7 +69,9 @@ def main(page: ft.Page):
     nav_bar = ft.Row(
         controls=[
             ft.PopupMenuButton(
+                
                 content=ft.Container(
+                    
                     content=ft.Text("Productos", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
@@ -81,14 +84,22 @@ def main(page: ft.Page):
                     ft.PopupMenuItem("Ver Productos", data="ver_productos", on_click=menu_item_click),
                 ],
             ),
+            ft.Container(width=100),  # Espaciador entre el título y los botones
+            ft.Text("Modulo de administración y reportes", size=15, color="#C7C8CA" ),
+                
             
+            ft.Container(width=100),  # Espaciador para separar los botones
+         
             ft.PopupMenuButton(
+            
                 content=ft.Container(
+                    
                     content=ft.Text("Membresías", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
                     alignment=ft.Alignment(0, 0),
                     bgcolor="#741717",
+                    
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Membresías", data="ver_membresias", on_click=menu_item_click),
@@ -97,6 +108,7 @@ def main(page: ft.Page):
             
             ft.PopupMenuButton(
                 content=ft.Container(
+                    
                     content=ft.Text("Ventas", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
@@ -111,6 +123,7 @@ def main(page: ft.Page):
             
             ft.PopupMenuButton(
                 content=ft.Container(
+                    
                     content=ft.Text("Clientes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
@@ -125,6 +138,7 @@ def main(page: ft.Page):
 
             ft.PopupMenuButton(
                 content=ft.Container(
+                    
                     content=ft.Text("Reportes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                     width=150,
                     height=60,
@@ -138,7 +152,10 @@ def main(page: ft.Page):
         ],
         spacing=0,
         alignment=ft.MainAxisAlignment.START,
+       
     )
+    
+
     
     page.add(
         ft.Column(
