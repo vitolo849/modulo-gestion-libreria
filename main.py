@@ -136,7 +136,7 @@ def main(page: ft.Page):
             ),
             ft.Container(width=50),
             ft.Text("Modulo de administración y reportes", size=15, color="#C7C8CA"),
-            ft.Container(width=100),
+            ft.Container(width=50),
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
@@ -147,7 +147,7 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Membresías", data="ver_membresias", on_click=menu_item_click), 
@@ -163,7 +163,24 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                ),
+                items=[
+                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
+                    ft.PopupMenuItem("Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
+                ],
+            ),
+            ft.PopupMenuButton(
+                content=ft.Container(
+                    content=ft.Row(
+                        controls=[
+                            ft.Icon(ft.Icons.SELL_OUTLINED, color=ft.Colors.WHITE, size=20),
+                            ft.Text("Compras", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                        ],
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        spacing=8,
+                    ),
+                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
@@ -180,11 +197,10 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem("Ver Clientes", data="ver_clientes", on_click=menu_item_click),
-                    ft.PopupMenuItem("Reporte de Clientes", data="reporte_clientes", on_click=menu_item_click),
                 ],
             ),
             ft.PopupMenuButton(
@@ -197,7 +213,7 @@ def main(page: ft.Page):
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
                     ft.PopupMenuItem("Clientes", data="reportesClientes", on_click=menu_item_click),
