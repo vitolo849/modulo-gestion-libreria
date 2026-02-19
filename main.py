@@ -10,28 +10,31 @@ from clientes.agg_cliente import view as agregarCliente
 from membresia.ver_membresia import view as verMemebresia
 from membresia.activas_membresia import view as agregarMembresia
 
-## Importación de sección de reportes 
+# Importación de sección de reportes
 from reportes.clientes import view as clientesReportes
 from reportes.compras import view as comprasReportes
 from reportes.ventas import view as ventasReportes
 from reportes.proveedores import view as proveedoresReportes
 from reportes.models import cargar_datos_prueba
 
+
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
         content=ft.Column([
-            ft.Icon(icono, size=40, color="white"), 
+            ft.Icon(icono, size=40, color="white"),
             ft.Text(titulo, size=16, weight="bold", color="white"),
         ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
         width=250,
         height=180,
-        bgcolor="#8D695D", 
+        bgcolor="#8D695D",
         border_radius=15,
         animate_scale=300,
         data=data_accion,
-        on_click=menu_click_func, 
-        on_hover=lambda e: (setattr(e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
+        on_click=menu_click_func,
+        on_hover=lambda e: (setattr(
+            e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
     )
+
 
 def main(page: ft.Page):
     page.title = "Administración Usuario"
@@ -50,7 +53,8 @@ def main(page: ft.Page):
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
         elif e.control.data == "membresias":
-            content_area.content = ft.Text("Sección de Membresías de Clientes", size=25)
+            content_area.content = ft.Text(
+                "Sección de Membresías de Clientes", size=25)
         elif e.control.data == "ventas":
             content_area.content = ft.Text("Sección de ventas", size=25)
         elif e.control.data == "cliente":
@@ -62,7 +66,7 @@ def main(page: ft.Page):
     def menu_item_click(e):
         accion = e.control.data
         content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
-        
+
         if accion == "agregar_producto":
             content_area.alignment = ft.Alignment(0, 0)
             agregarProductos(content_area, ft)
@@ -74,10 +78,12 @@ def main(page: ft.Page):
         elif accion == "ver_membresias":
             verMemebresia(content_area, ft)
         elif accion == "clientes" or accion == "ver_clientes":
-            content_area.content.controls.append(ft.Text("Sección de Clientes", size=25))
+            content_area.content.controls.append(
+                ft.Text("Sección de Clientes", size=25))
             agregarCliente(content_area, ft)
         elif accion == "ver_ventas" or accion == "reporte_ventas":
-            content_area.content.controls.append(ft.Text("Módulo de Ventas", size=25))
+            content_area.content.controls.append(
+                ft.Text("Módulo de Ventas", size=25))
         elif accion == "reportesClientes" or accion == "reporte_clientes":
             clientesReportes(content_area, ft)
         elif accion == "reportesVentas":
@@ -93,9 +99,12 @@ def main(page: ft.Page):
     def mostrar_dashboard():
         content_area.content = ft.Row(
             controls=[
-                crear_boton_acceso("Ventas de Hoy", ft.Icons.SHOPPING_CART, "ver_ventas", menu_item_click),
-                crear_boton_acceso("Nuevos Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
-                crear_boton_acceso("Stock / Inventario", ft.Icons.INVENTORY, "ver_productos", menu_item_click),
+                crear_boton_acceso(
+                    "Ventas de Hoy", ft.Icons.SHOPPING_CART, "ver_ventas", menu_item_click),
+                crear_boton_acceso(
+                    "Nuevos Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
+                crear_boton_acceso(
+                    "Stock / Inventario", ft.Icons.INVENTORY, "ver_productos", menu_item_click),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             spacing=30
@@ -109,6 +118,7 @@ def main(page: ft.Page):
 
     nav_bar = ft.Row(
         controls=[
+            # --- LADO IZQUIERDO ---
             ft.IconButton(
                 icon=ft.Icons.HOME_ROUNDED,
                 icon_color=ft.Colors.WHITE,
@@ -120,8 +130,10 @@ def main(page: ft.Page):
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.INVENTORY, color=ft.Colors.WHITE, size=20),
-                            ft.Text("Productos", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.INVENTORY,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Productos", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
@@ -129,105 +141,135 @@ def main(page: ft.Page):
                     width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Agregar Producto", data="agregar_producto", on_click=menu_item_click),
-                    ft.PopupMenuItem("Eliminar Producto", data="eliminar_producto", on_click=menu_item_click),
-                    ft.PopupMenuItem("Ver Productos", data="ver_productos", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Agregar Producto", data="agregar_producto", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Eliminar Producto", data="eliminar_producto", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Ver Productos", data="ver_productos", on_click=menu_item_click),
                 ],
             ),
-            ft.Container(width=50),
-            ft.Text("Modulo de administración y reportes", size=15, color="#C7C8CA"),
-            ft.Container(width=50),
+
+            ft.VerticalDivider(width=20, color=ft.Colors.TRANSPARENT),
+            ft.Text("Modulo de administración y reportes",
+                    size=15, color="#C7C8CA"),
+
+            # Este contenedor se expande 
+            ft.Container(expand=True),
+
+            # --- LADO DERECHO ---
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.CARD_MEMBERSHIP, color=ft.Colors.WHITE, size=20),
-                            ft.Text("Membresías", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.CARD_MEMBERSHIP,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Membresías", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=130, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Ver Membresías", data="ver_membresias", on_click=menu_item_click), 
+                    ft.PopupMenuItem(
+                        "Ver Membresías", data="ver_membresias", on_click=menu_item_click),
                 ]
             ),
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.SHOPPING_CART, color=ft.Colors.WHITE, size=20),
-                            ft.Text("ventas", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.SHOPPING_CART,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Ventas", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=110, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
-                    ft.PopupMenuItem("Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
+                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas",
+                                     on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.SELL_OUTLINED, color=ft.Colors.WHITE, size=20),
-                            ft.Text("Compras", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.SELL_OUTLINED,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Compras", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas", on_click=menu_item_click),
-                    ft.PopupMenuItem("Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
+                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas",
+                                     on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.PERSON, color=ft.Colors.WHITE, size=20),    
-                            ft.Text("Clientes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.PERSON,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Clientes", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=110, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Ver Clientes", data="ver_clientes", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Ver Clientes", data="ver_clientes", on_click=menu_item_click),
                 ],
             ),
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.BAR_CHART, color=ft.Colors.WHITE, size=20),
-                            ft.Text("Reportes", size=16, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ft.Icon(ft.Icons.BAR_CHART,
+                                    color=ft.Colors.WHITE, size=20),
+                            ft.Text("Reportes", size=16,
+                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=100, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Clientes", data="reportesClientes", on_click=menu_item_click),
-                    ft.PopupMenuItem("Ventas", data="reportesVentas", on_click=menu_item_click),
-                    ft.PopupMenuItem("Compras", data="reportesCompras", on_click=menu_item_click),
-                    ft.PopupMenuItem("Proveedores", data="reportesProveedores", on_click=menu_item_click),
-                    ft.PopupMenuItem("TEST_TEMP", data="TEST_TEMP", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Clientes", data="reportesClientes", on_click=menu_item_click),
+                    ft.PopupMenuItem("Ventas", data="reportesVentas",
+                                     on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Compras", data="reportesCompras", on_click=menu_item_click),
+                    ft.PopupMenuItem(
+                        "Proveedores", data="reportesProveedores", on_click=menu_item_click),
+                    ft.PopupMenuItem("TEST_TEMP", data="TEST_TEMP",
+                                     on_click=menu_item_click),
                 ],
             )
         ],
-        spacing=0,
+        spacing=10,
         alignment=ft.MainAxisAlignment.START,
     )
-    
+
     page.add(
         ft.Column(
             controls=[
@@ -240,6 +282,7 @@ def main(page: ft.Page):
         )
     )
     mostrar_dashboard()
+
 
 if __name__ == "__main__":
     establecer_logs(True)
