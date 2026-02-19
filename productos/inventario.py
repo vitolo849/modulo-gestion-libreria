@@ -1,3 +1,5 @@
+import flet as ft
+
 def view(content_area, ft):
     productos = [
         ["Lhgfhf", "978-3-16-148410-0", "$1200", "15"],
@@ -7,48 +9,68 @@ def view(content_area, ft):
     ]
 
     def acciones_menu(e):
-        print(f"Acción seleccionada sobre {e.control.data}")
+        print(f"Acción sobre: {e.control.data}")
 
     filas = []
     for p in productos:
-        fila = ft.DataRow(
-            cells=[
-                ft.DataCell(ft.Text(p[0])),
-                ft.DataCell(ft.Text(p[1])),
-                ft.DataCell(ft.Text(p[2])),
-                ft.DataCell(
-                    ft.PopupMenuButton(
-                        items=[
-                            ft.PopupMenuItem("Editar", on_click=acciones_menu, data=p[0]),
-                            ft.PopupMenuItem("Eliminar", on_click=acciones_menu, data=p[0]),
-                            ft.PopupMenuItem("Ver Detalles", on_click=acciones_menu, data=p[0]),
-                        ],
-                    )
-                ),
-            ],
+        filas.append(
+            ft.DataRow(
+                cells=[
+                    ft.DataCell(ft.Text(p[0], weight="w500", color="#4A322B")),
+                    ft.DataCell(ft.Text(p[1], color=ft.Colors.BLUE_GREY_400)),
+                    ft.DataCell(ft.Text(p[2], weight="bold", color="green")),
+                    ft.DataCell(
+                        ft.PopupMenuButton(
+                            icon=ft.Icons.MORE_VERT, # Este es el de los tres puntos
+                            icon_color="BLACK",    # AQUÍ eliges el color (puedes usar "blue", "red", etc.)
+                            icon_size=20,
+                            items=[
+                                # CORRECCIÓN: Quitamos 'text=' y usamos el string directo
+                                ft.PopupMenuItem("Editar", icon=ft.Icons.EDIT, on_click=acciones_menu, data=p[0]),
+                                ft.PopupMenuItem("Eliminar", icon=ft.Icons.DELETE, on_click=acciones_menu, data=p[0]),
+                            ],
+                        )
+                    ),
+                ],
+            )
         )
-        filas.append(fila)
 
     tabla = ft.DataTable(
+        heading_row_color="#8D695D",
+        heading_row_height=50,
+        
         columns=[
-            ft.DataColumn(ft.Text("Producto")),
-            ft.DataColumn(ft.Text("ID/ISBN")),
-            ft.DataColumn(ft.Text("Precio")),
-            ft.DataColumn(ft.Text("Acciones")),
+            ft.DataColumn(ft.Text("PRODUCTO", color="white", weight="bold")),
+            ft.DataColumn(ft.Text("ID / ISBN", color="white", weight="bold")),
+            ft.DataColumn(ft.Text("PRECIO", color="white", weight="bold")),
+            ft.DataColumn(ft.Text("ACCIONES", color="white", weight="bold")),
         ],
         rows=filas,
-        border=ft.border.all(1, "BLACK"),
-        border_radius=10,
-        vertical_lines=ft.border.BorderSide(1, "#EEEEEE"),
+            
+    )
+
+    # Contenedor principal estilizado
+    tarjeta = ft.Container(
+        content=ft.Column([
+            ft.Row([
+                # CORRECCIÓN: Quitamos 'name='
+                ft.Icon(ft.Icons.INVENTORY_2, color="#8D695D", size=30),
+                ft.Text("Listado de Inventario", size=22, weight="bold", color="#4A322B"),
+            ]),
+            ft.Divider(height=1, color="#EEEEEE"),
+            ft.Column([tabla], scroll=ft.ScrollMode.AUTO),
+        ], spacing=15),
+        bgcolor="white",
+        padding=25,
+        border_radius=15,
+        shadow=ft.BoxShadow(blur_radius=15, color=ft.Colors.with_opacity(0.1, "black")),
     )
 
     content_area.content = ft.Column([
-        ft.Text("INVENTARIO DE PRODUCTOS", size=30, weight=ft.FontWeight.BOLD),
-        ft.Container(
-            content=ft.Column([tabla], scroll=ft.ScrollMode.AUTO),
-            height=500,
-            border=ft.border.all(2, "BLACK"),
-            border_radius=5,
-            padding=10,
-        ),
-    ], spacing=10)
+        ft.Text("ADMINISTRACIÓN DE STOCK", size=28, weight="bold", color="white"),
+        tarjeta,
+    ], spacing=20
+    )
+    
+    
+    content_area.update()

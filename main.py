@@ -19,18 +19,36 @@ from reportes.ventas import view as ventasReportes
 from reportes.proveedores import view as proveedoresReportes
 
 
+def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
+    return ft.Container(
+        content=ft.Column([
+            # CAMBIO AQUÍ: Eliminamos "name=" y dejamos solo el objeto del icono
+            ft.Icon(icono, size=40, color="white"), 
+            ft.Text(titulo, size=16, weight="bold", color="white"),
+        ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
+        width=250,
+        height=180,
+        bgcolor="#8D695D", 
+        border_radius=15,
+        animate_scale=300,
+        data=data_accion,
+        on_click=menu_click_func, 
+        on_hover=lambda e: (setattr(e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
+    )
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
     page.bgcolor = "#741717"
 
     content_area = ft.Container(
-        content=ft.Text("Modulo de administración y reportes", size=20),
         padding=40,
         alignment=ft.Alignment(0, 0),
         expand=True,
-        bgcolor="#CBA68B"
+        bgcolor="#CBA68B",
+        content=ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
     )
+    
+    
 
     def cambiar_vista(e):
 
@@ -49,28 +67,34 @@ def main(page: ft.Page):
 
     def menu_item_click(e):
         accion = e.control.data
+        # Mantenemos siempre una Column para que el scroll no se rompa
+        content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
+        
         if accion == "agregar_producto":
             content_area.alignment = ft.Alignment(0, 0)
             agregarProductos(content_area, ft)
 
         elif accion == "eliminar_producto":
-            content_area.content = ft.Text("Eliminar producto", size=25)
             eliminarProducto(content_area, ft)
+            
         elif accion == "ver_productos":
             content_area.alignment = ft.Alignment(0, 0)
             inventariosProductos(content_area, ft)
+            
         elif accion == "ver_membresias":
             verMemebresia(content_area, ft)
-        elif accion == "clientes":
-            content_area.content = ft.Text("seccion de clientes", size=25)
+            
+        # Corregido para que acepte ambos nombres (el del botón central y el del nav_bar)
+        elif accion == "clientes" or accion == "ver_clientes":
+            content_area.content.controls.append(ft.Text("Sección de Clientes", size=25))
             agregarCliente(content_area, ft)
-        elif accion == "ver_ventas":
-            content_area.content = ft.Text("Historial de ventas", size=25)
-        elif accion == "reporte_ventas":
-            content_area.content = ft.Text("Reporte de ventas", size=25)
-        ###############################################
-        ##Menu de reprotes
-        elif accion == "reportesClientes":
+            
+        elif accion == "ver_ventas" or accion == "reporte_ventas":
+            content_area.content.controls.append(ft.Text("Módulo de Ventas", size=25))
+            # Aquí podrías llamar a una función de ventas si la tienes
+            
+        # Menu de reportes
+        elif accion == "reportesClientes" or accion == "reporte_clientes":
             clientesReportes(content_area, ft)
         elif accion == "reportesVentas":
             ventasReportes(content_area, ft)
@@ -78,11 +102,36 @@ def main(page: ft.Page):
             proveedoresReportes(content_area, ft)
         elif accion == "reportesCompras":
             comprasReportes(content_area, ft)
-        #################################################
+            
         page.update()
+    def mostrar_dashboard():
+        # Usamos una fila para los botones de acceso rápido
+        content_area.content = ft.Row(
+            controls=[
+                crear_boton_acceso("Ventas de Hoy", ft.Icons.SHOPPING_CART, "ver_ventas", menu_item_click),
+                crear_boton_acceso("Nuevos Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
+                crear_boton_acceso("Stock / Inventario", ft.Icons.INVENTORY, "ver_productos", menu_item_click),
+            ],
+            alignment=ft.MainAxisAlignment.CENTER,
+            spacing=30
+        )
+        page.update()
+    def ir_al_inicio(e):
+        content_area.alignment = ft.Alignment(0, 0) # Centramos de nuevo para el dashboard
+        mostrar_dashboard()
+        page.update()
+    
+        
 # la barra de navegación con los botones de productos, membresias, ventas, clientes y reportes
     nav_bar = ft.Row(
         controls=[
+            ft.IconButton(
+                icon=ft.Icons.HOME_ROUNDED,
+                icon_color=ft.Colors.WHITE,
+                icon_size=30,
+                tooltip="Ir al Inicio",
+                on_click=ir_al_inicio
+            ),
             ft.PopupMenuButton(
 
                 content=ft.Container(
@@ -240,6 +289,8 @@ def main(page: ft.Page):
         )
     )
 
+    mostrar_dashboard()
+    
 
 if __name__ == "__main__":
     # Habilitar o deshabilitar los logs de las queries de la base de datos
