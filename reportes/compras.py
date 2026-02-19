@@ -43,7 +43,7 @@ def view(content_area, ft):
     )
     
     content_area.content = ft.Column([
-        ft.Text("REPORTES DE CLIENTES", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("REPORTES DE COMPRAS", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
         ft.Container(
             content=ft.Column([
