@@ -102,7 +102,7 @@ def main(page: ft.Page):
                 crear_boton_acceso(
                     "Ventas de Hoy", ft.Icons.SHOPPING_CART, "ver_ventas", menu_item_click),
                 crear_boton_acceso(
-                    "Nuevos Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
+                    "Ver Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
                 crear_boton_acceso(
                     "Stock / Inventario", ft.Icons.INVENTORY, "ver_productos", menu_item_click),
             ],
