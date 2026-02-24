@@ -130,24 +130,12 @@ def main(page: ft.Page):
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.INVENTORY,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Productos", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
                     width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
-                items=[
-                    ft.PopupMenuItem(
-                        "Agregar Producto", data="agregar_producto", on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Eliminar Producto", data="eliminar_producto", on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Ver Productos", data="ver_productos", on_click=menu_item_click),
-                ],
             ),
 
             ft.VerticalDivider(width=20, color=ft.Colors.TRANSPARENT),
