@@ -19,6 +19,7 @@ from reportes.models import cargar_datos_prueba
 
 
 from compras.reposicion import view as reposicionCompras
+from compras.lista_reposicion import view as ordenesCompras
 
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
@@ -95,6 +96,8 @@ def main(page: ft.Page):
             comprasReportes(content_area, ft)
         elif accion == "comprasReposicion":
             reposicionCompras(content_area, ft)
+        elif accion == "comprasOrdenes":
+            ordenesCompras(content_area, ft)
         elif accion == "TEST_TEMP":
             cargar_datos_prueba()
         page.update()
@@ -205,6 +208,8 @@ def main(page: ft.Page):
                 ),
                 items=[
                     ft.PopupMenuItem("Reposición", data="comprasReposicion",
+                                     on_click=menu_item_click),
+                    ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
                                      on_click=menu_item_click),
                     ft.PopupMenuItem(
                         "Temporal", data="reporte_ventas", on_click=menu_item_click),
