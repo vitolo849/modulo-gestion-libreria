@@ -6,3 +6,4 @@
 table.pdf
 /reportes/__pycache__
 /reportes/__pycache__
+*.pyc
