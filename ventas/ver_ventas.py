@@ -8,9 +8,9 @@ def view(content_area, flet_module):
         ["003", "23/02/2026", "Luis López", "$2,100.00", "Transferencia", "Pendiente"],
     ]
 
-    # 2. Esta función creará las filas de la tabla
+    # 2. Esta función creará las filas de la tabla 
     def crear_filas(lista_datos):
-        filas = []
+        filas = [] # Aquí guardaremos las filas
         for v in lista_datos:
             color_estado = "#1B5E20" if v[5] == "Pagado" else "#0D47A1"
             if v[5] == "Anulado": color_estado = "#B71C1C"

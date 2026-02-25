@@ -122,7 +122,7 @@ def main(page: ft.Page):
                 icon=ft.Icons.HOME_ROUNDED,
                 icon_color=ft.Colors.WHITE,
                 icon_size=30,
-                tooltip="Ir al Inicio",
+                tooltip="Ir al Inicio", ##ijhsdi
                 on_click=ir_al_inicio
             ),
             ft.PopupMenuButton(
