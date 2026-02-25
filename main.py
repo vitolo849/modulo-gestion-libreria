@@ -9,7 +9,7 @@ from clientes.agg_cliente import view as agregarCliente
 
 from membresia.ver_membresia import view as verMemebresia
 from membresia.activas_membresia import view as agregarMembresia
-
+from ventas.ver_ventas import view as verVentas
 # Importación de sección de reportes
 from reportes.clientes import view as clientesReportes
 from reportes.compras import view as comprasReportes
@@ -81,9 +81,8 @@ def main(page: ft.Page):
             content_area.content.controls.append(
                 ft.Text("Sección de Clientes", size=25))
             agregarCliente(content_area, ft)
-        elif accion == "ver_ventas" or accion == "reporte_ventas":
-            content_area.content.controls.append(
-                ft.Text("Módulo de Ventas", size=25))
+        elif accion == "ver_ventas" :
+            verVentas(content_area, ft)
         elif accion == "reportesClientes" or accion == "reporte_clientes":
             clientesReportes(content_area, ft)
         elif accion == "reportesVentas":
@@ -123,7 +122,7 @@ def main(page: ft.Page):
                 icon=ft.Icons.HOME_ROUNDED,
                 icon_color=ft.Colors.WHITE,
                 icon_size=30,
-                tooltip="Ir al Inicio",
+                tooltip="Ir al Inicio", ##ijhsdi
                 on_click=ir_al_inicio
             ),
             ft.PopupMenuButton(
