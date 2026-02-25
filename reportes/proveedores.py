@@ -1,4 +1,3 @@
-# proveedores.py
 from reportes.models import (
     compras_por_proveedor,
     libros_mas_reordenados,
@@ -11,56 +10,45 @@ from reportes.models import (
 )
 from reportes.pdf import getPdfTable
 from datetime import date, timedelta
-
 def view(content_area, ft):
     def dropdown_changed(e):
         print(f"Opción seleccionada: {dropdown.value}")
-    
     def generar_reporte(e):
         print(f"Valor seleccionado: {dropdown.value}")
-        
         if dropdown.value == "comprasProveedor":
             fin = date.today()
             inicio = fin - timedelta(days=90)
             data = compras_por_proveedor(inicio, fin)
             getPdfTable(data)
             print("Reporte de compras por proveedor")
-            
         elif dropdown.value == "proveedoresMasCompras":
             data = proveedores_mas_compras()
             getPdfTable(data)
             print("Reporte de proveedores con más compras")
-            
         elif dropdown.value == "librosReordenados":
             data = libros_mas_reordenados()
             getPdfTable(data)
             print("Reporte de libros más reordenados")
-            
         elif dropdown.value == "ordenesEstado":
             data = ordenes_reposicion_por_estado()
             getPdfTable(data)
             print("Reporte de órdenes por estado")
-            
         elif dropdown.value == "tiempoEntrega":
             data = proveedores_tiempo_entrega()
             getPdfTable(data)
             print("Reporte de tiempo de entrega por proveedor")
-            
         elif dropdown.value == "ordenesMes":
             data = ordenes_por_mes()
             getPdfTable(data)
             print("Reporte de órdenes por mes")
-            
         elif dropdown.value == "librosBajoStock":
             data = libros_bajo_stock()
             getPdfTable(data)
             print("Reporte de libros bajo stock mínimo")
-            
         elif dropdown.value == "ordenesPendientes":
             data = ordenes_pendientes()
             getPdfTable(data)
             print("Reporte de órdenes pendientes")
-    
     dropdown = ft.Dropdown(
         label="Seleccionar reporte",
         hint_text="Elige una opción...",
@@ -76,7 +64,6 @@ def view(content_area, ft):
             ft.dropdown.Option("ordenesPendientes", "Órdenes pendientes"),
         ],
     )
-    
     content_area.content = ft.Column([
         ft.Text("REPORTES DE PROVEEDORES Y COMPRAS", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),

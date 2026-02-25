@@ -1,26 +1,20 @@
 import flet as ft
 from datetime import date, timedelta
 from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
-
 from productos.agregar import view as agregarProductos
 from productos.inventario import view as inventariosProductos
 from productos.eliminar import view as eliminarProducto
 from clientes.agg_cliente import view as agregarCliente
-
 from membresia.ver_membresia import view as verMemebresia
 from membresia.activas_membresia import view as agregarMembresia
 from ventas.ver_ventas import view as verVentas
-# Importación de sección de reportes
 from reportes.clientes import view as clientesReportes
 from reportes.compras import view as comprasReportes
 from reportes.ventas import view as ventasReportes
 from reportes.proveedores import view as proveedoresReportes
 from reportes.models import cargar_datos_prueba
-
-
 from compras.reposicion import view as reposicionCompras
 from compras.lista_reposicion import view as ordenesCompras
-
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
         content=ft.Column([
@@ -37,13 +31,10 @@ def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
         on_hover=lambda e: (setattr(
             e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
     )
-
-
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
     page.bgcolor = "#741717"
-
     content_area = ft.Container(
         padding=40,
         alignment=ft.Alignment(0, 0),
@@ -51,7 +42,6 @@ def main(page: ft.Page):
         bgcolor="#CBA68B",
         content=ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
     )
-
     def cambiar_vista(e):
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
@@ -65,11 +55,9 @@ def main(page: ft.Page):
         elif e.control.data == "reportes":
             content_area.content = ft.Text("Sección de clientes", size=25)
         page.update()
-
     def menu_item_click(e):
         accion = e.control.data
         content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
-
         if accion == "agregar_producto":
             content_area.alignment = ft.Alignment(0, 0)
             agregarProductos(content_area, ft)
@@ -101,7 +89,6 @@ def main(page: ft.Page):
         elif accion == "TEST_TEMP":
             cargar_datos_prueba()
         page.update()
-
     def mostrar_dashboard():
         content_area.content = ft.Row(
             controls=[
@@ -116,20 +103,17 @@ def main(page: ft.Page):
             spacing=30
         )
         page.update()
-
     def ir_al_inicio(e):
         content_area.alignment = ft.Alignment(0, 0)
         mostrar_dashboard()
         page.update()
-
     nav_bar = ft.Row(
         controls=[
-            # --- LADO IZQUIERDO ---
             ft.IconButton(
                 icon=ft.Icons.HOME_ROUNDED,
                 icon_color=ft.Colors.WHITE,
                 icon_size=30,
-                tooltip="Ir al Inicio", ##ijhsdi
+                tooltip="Ir al Inicio",
                 on_click=ir_al_inicio
             ),
             ft.PopupMenuButton(
@@ -143,15 +127,10 @@ def main(page: ft.Page):
                     width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
             ),
-
             ft.VerticalDivider(width=20, color=ft.Colors.TRANSPARENT),
             ft.Text("Modulo de administración y reportes",
                     size=15, color="#C7C8CA"),
-
-            # Este contenedor se expande 
             ft.Container(expand=True),
-
-            # --- LADO DERECHO ---
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
@@ -265,7 +244,6 @@ def main(page: ft.Page):
         spacing=10,
         alignment=ft.MainAxisAlignment.START,
     )
-
     page.add(
         ft.Column(
             controls=[
@@ -278,8 +256,6 @@ def main(page: ft.Page):
         )
     )
     mostrar_dashboard()
-
-
 if __name__ == "__main__":
     establecer_logs(True)
     session = crear_sesion()

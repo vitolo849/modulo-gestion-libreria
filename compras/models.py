@@ -1,9 +1,7 @@
-# models_compras.py
 from datetime import date, timedelta, datetime
 from libreria_cafe_edd_db import crear_sesion, Proveedor, Libro, OrdenReposicion, DetallesReposicion
 from sqlalchemy import func, desc, and_
 import random
-
 def obtener_proveedores():
     """Obtiene lista de proveedores para el combobox"""
     session = crear_sesion()
@@ -12,7 +10,6 @@ def obtener_proveedores():
         return [{"id": p.id, "nombre_empresa": p.nombre_empresa, "rif_nit": p.rif_nit} for p in proveedores]
     finally:
         session.close()
-
 def obtener_productos_por_tipo(tipo):
     """Obtiene productos según el tipo (solo LIBRO para reposición)"""
     session = crear_sesion()
@@ -23,11 +20,9 @@ def obtener_productos_por_tipo(tipo):
         return []
     finally:
         session.close()
-
 def crear_orden_reposicion(datos_orden):
     """
     Crea una nueva orden de reposición
-    
     Args:
         datos_orden: Dict con:
             - id_proveedor: int
@@ -38,7 +33,6 @@ def crear_orden_reposicion(datos_orden):
     session = crear_sesion()
     try:
         fecha_actual = date.today()
-        
         orden = OrdenReposicion(
             id_proveedor=datos_orden["id_proveedor"],
             fecha_ingreso=fecha_actual,
@@ -49,7 +43,6 @@ def crear_orden_reposicion(datos_orden):
         )
         session.add(orden)
         session.flush()
-        
         for item in datos_orden["items"]:
             detalle = DetallesReposicion(
                 id_orden=orden.id,
@@ -58,16 +51,13 @@ def crear_orden_reposicion(datos_orden):
                 precio=item["precio_compra"]
             )
             session.add(detalle)
-        
         session.commit()
         return {"success": True, "orden_id": orden.id, "message": "Orden creada exitosamente"}
-        
     except Exception as e:
         session.rollback()
         return {"success": False, "error": str(e)}
     finally:
         session.close()
-
 def obtener_ordenes_recientes(limite=10):
     """Obtiene las órdenes de reposición más recientes"""
     session = crear_sesion()
@@ -81,7 +71,6 @@ def obtener_ordenes_recientes(limite=10):
         ).join(Proveedor, OrdenReposicion.id_proveedor == Proveedor.id
         ).order_by(desc(OrdenReposicion.fecha_solicitud)
         ).limit(limite).all()
-        
         return [{
             "id": o.id,
             "fecha": o.fecha_solicitud.strftime("%d/%m/%Y"),
@@ -91,7 +80,6 @@ def obtener_ordenes_recientes(limite=10):
         } for o in ordenes]
     finally:
         session.close()
-
 def obtener_detalle_orden(id_orden):
     """Obtiene el detalle de una orden específica"""
     session = crear_sesion()
@@ -99,15 +87,12 @@ def obtener_detalle_orden(id_orden):
         orden = session.query(OrdenReposicion).get(id_orden)
         if not orden:
             return None
-        
         proveedor = session.query(Proveedor).get(orden.id_proveedor)
-        
         detalles = session.query(
             DetallesReposicion,
             Libro.titulo
         ).join(Libro, DetallesReposicion.id_libro == Libro.id
         ).filter(DetallesReposicion.id_orden == id_orden).all()
-        
         return {
             "orden": {
                 "id": orden.id,
@@ -134,7 +119,6 @@ def obtener_detalle_orden(id_orden):
         }
     finally:
         session.close()
-
 def actualizar_estado_orden(id_orden, nuevo_estado, fecha_entrega=None):
     """Actualiza el estado de una orden y opcionalmente la fecha de entrega"""
     session = crear_sesion()
@@ -142,18 +126,14 @@ def actualizar_estado_orden(id_orden, nuevo_estado, fecha_entrega=None):
         orden = session.query(OrdenReposicion).get(id_orden)
         if not orden:
             return {"success": False, "error": "Orden no encontrada"}
-        
         orden.estado = nuevo_estado
         if fecha_entrega and nuevo_estado == "Recibida":
             orden.fecha_entrega = fecha_entrega
-            
-            # Actualizar stock de libros
             detalles = session.query(DetallesReposicion).filter(DetallesReposicion.id_orden == id_orden).all()
             for detalle in detalles:
                 libro = session.query(Libro).get(detalle.id_libro)
                 if libro:
                     libro.stock_actual += detalle.cantidad
-        
         session.commit()
         return {"success": True, "message": f"Orden actualizada a {nuevo_estado}"}
     except Exception as e:
@@ -161,7 +141,6 @@ def actualizar_estado_orden(id_orden, nuevo_estado, fecha_entrega=None):
         return {"success": False, "error": str(e)}
     finally:
         session.close()
-
 def libros_bajo_stock():
     """Libros cuyo stock actual está por debajo del mínimo"""
     session = crear_sesion()
@@ -175,7 +154,6 @@ def libros_bajo_stock():
             (Libro.stock_minimo - Libro.stock_actual).label('faltante')
         ).filter(Libro.stock_actual < Libro.stock_minimo
         ).order_by(desc('faltante')).all()
-        
         return [{
             "id": r.id,
             "isbn": r.isbn,
@@ -186,7 +164,6 @@ def libros_bajo_stock():
         } for r in resultados]
     finally:
         session.close()
-
 def sugerir_cantidad_reposicion(id_libro):
     """Sugiere una cantidad de reposición basada en el historial de ventas"""
     session = crear_sesion()
@@ -194,13 +171,9 @@ def sugerir_cantidad_reposicion(id_libro):
         libro = session.query(Libro).get(id_libro)
         if not libro:
             return 0
-        
-        # Calcular ventas promedio de los últimos 30 días
         fecha_limite = date.today() - timedelta(days=30)
-        
         from libreria_cafe_edd_db import Venta
         from libreria_cafe_edd_db  import Factura
-        
         ventas = session.query(
             func.sum(Venta.cantidad).label('total')
         ).join(Factura, Venta.id_factura == Factura.id
@@ -209,10 +182,8 @@ def sugerir_cantidad_reposicion(id_libro):
             Venta.tipo == "LIBRO",
             Factura.fecha >= fecha_limite
         ).first()
-        
         ventas_mensuales = ventas.total or 0
         sugerencia = max(ventas_mensuales // 2, libro.stock_minimo * 2)
-        
         return sugerencia
     finally:
         session.close()

@@ -1,10 +1,8 @@
 from reportes.models import clientesMasGastan, clientesMasCompras, clientesMasProductos, rankingClientes, clientesTopPorPeriodo
 from reportes.pdf import getPdfTable
-
 def view(content_area, ft):
     def dropdown_changed(e):
         print(f"Opción seleccionada: {dropdown.value}")
-    
     def generar_reporte(e):
         print(f"Valor seleccionado: {dropdown.value}")
         if dropdown.value == "clienteMasCompras":
@@ -28,7 +26,6 @@ def view(content_area, ft):
             data = clientesTopPorPeriodo()
             getPdfTable(data)
             print("Reporte clientes por período ")
-    
     dropdown = ft.Dropdown(
         label="Seleccionar reporte",
         hint_text="Elige una opción...",
@@ -41,7 +38,6 @@ def view(content_area, ft):
             ft.dropdown.Option("periodo", "Clientes de los ultimos 30 días"),
         ],
     )
-    
     content_area.content = ft.Column([
         ft.Text("REPORTES DE CLIENTES", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),

@@ -1,12 +1,11 @@
 from reportes.models import (
-    obtener_ventas_por_periodo, 
-    productos_mas_vendidos, 
+    obtener_ventas_por_periodo,
+    productos_mas_vendidos,
     ventas_por_dia,
     ingresos_por_metodo_pago
 )
 from reportes.pdf import getPdfTable
 from datetime import date, timedelta
-
 def view(content_area, ft):
     def generar_reporte(e):
         if dropdown.value == "ventasDia":
@@ -19,23 +18,19 @@ def view(content_area, ft):
                 f"${data['promedio_venta']:.2f}"
             ))
             getPdfTable(tabla_data)
-            
         elif dropdown.value == "ventasPeriodo":
             fin = date.today()
             inicio = fin - timedelta(days=30)
             data = obtener_ventas_por_periodo(inicio, fin)
             getPdfTable(data)
-            
         elif dropdown.value == "productosMasVendidos":
             data = productos_mas_vendidos()
             getPdfTable(data)
-            
         elif dropdown.value == "ingresosMetodoPago":
             fin = date.today()
             inicio = fin - timedelta(days=30)
             data = ingresos_por_metodo_pago(inicio, fin)
             getPdfTable(data)
-    
     dropdown = ft.Dropdown(
         label="Seleccionar reporte",
         hint_text="Elige una opción...",
@@ -47,7 +42,6 @@ def view(content_area, ft):
             ft.dropdown.Option("ingresosMetodoPago", "Ingresos por método de pago"),
         ],
     )
-    
     content_area.content = ft.Column([
         ft.Text("REPORTES DE VENTAS", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),

@@ -1,4 +1,3 @@
-# lista_reposicion.py
 from datetime import date
 from compras.models_lista_reposicion import (
     obtener_ordenes_pendientes,
@@ -7,19 +6,15 @@ from compras.models_lista_reposicion import (
     actualizar_estado_orden,
     obtener_historial_ordenes
 )
-
 def view(content_area, ft):
     orden_seleccionada = None
-    
     def cargar_ordenes_pendientes():
         print("Cargando órdenes pendientes...")
         ordenes = obtener_ordenes_pendientes()
         lista_pendientes.controls.clear()
-        
         if ordenes:
             for orden in ordenes:
                 color_estado = ft.Colors.ORANGE if orden["estado"] == "Pendiente" else ft.Colors.BLUE
-                
                 orden_container = ft.Container(
                     content=ft.Column([
                         ft.Row([
@@ -59,17 +54,14 @@ def view(content_area, ft):
                 ft.Container(
                     content=ft.Text("No hay órdenes pendientes", color=ft.Colors.GREY, italic=True),
                     padding=20,
-                    alignment=ft.Alignment(0, 0)  # Cambiado de ft.alignment.center
+                    alignment=ft.Alignment(0, 0)
                 )
             )
-        
         lista_pendientes.update()
-    
     def cargar_ordenes_completadas():
         print("Cargando órdenes completadas...")
         ordenes = obtener_ordenes_completadas()
         lista_completadas.controls.clear()
-        
         if ordenes:
             for orden in ordenes:
                 orden_container = ft.Container(
@@ -94,25 +86,19 @@ def view(content_area, ft):
                 ft.Container(
                     content=ft.Text("No hay órdenes completadas", color=ft.Colors.GREY, italic=True),
                     padding=20,
-                    alignment=ft.Alignment(0, 0)  # Cambiado de ft.alignment.center
+                    alignment=ft.Alignment(0, 0)
                 )
             )
-        
         lista_completadas.update()
-    
     def ver_detalle_orden(id_orden):
         print(f"Viendo detalle de orden #{id_orden}")
         datos = obtener_detalle_orden_completo(id_orden)
-        
         if not datos:
             mostrar_mensaje("No se pudo cargar el detalle de la orden")
             return
-        
         nonlocal orden_seleccionada
         orden_seleccionada = datos
-        
         contenido_detalle = ft.Column([], spacing=10, scroll=ft.ScrollMode.AUTO)
-        
         contenido_detalle.controls.append(
             ft.Container(
                 content=ft.Column([
@@ -120,7 +106,7 @@ def view(content_area, ft):
                         ft.Text(f"ORDEN #{datos['orden']['id']}", size=18, weight=ft.FontWeight.BOLD),
                         ft.Container(
                             content=ft.Text(datos['orden']['estado'], color=ft.Colors.WHITE),
-                            bgcolor=ft.Colors.BLUE if datos['orden']['estado'] == "Pendiente" else 
+                            bgcolor=ft.Colors.BLUE if datos['orden']['estado'] == "Pendiente" else
                                    ft.Colors.GREEN if datos['orden']['estado'] == "Recibida" else
                                    ft.Colors.ORANGE,
                             padding=ft.padding.all(5),
@@ -147,7 +133,6 @@ def view(content_area, ft):
                 border_radius=5
             )
         )
-        
         if datos['detalles']:
             productos_list = []
             for d in datos['detalles']:
@@ -169,7 +154,6 @@ def view(content_area, ft):
                         bgcolor=ft.Colors.WHITE
                     )
                 )
-            
             contenido_detalle.controls.append(
                 ft.Container(
                     content=ft.Column([
@@ -189,10 +173,9 @@ def view(content_area, ft):
                 ft.Container(
                     content=ft.Text("No hay productos en esta orden", italic=True),
                     padding=20,
-                    alignment=ft.Alignment(0, 0)  # Cambiado de ft.alignment.center
+                    alignment=ft.Alignment(0, 0)
                 )
             )
-        
         if datos['orden']['estado'] in ["Pendiente", "Enviada"]:
             acciones = ft.Container(
                 content=ft.Row([
@@ -214,15 +197,13 @@ def view(content_area, ft):
                 padding=10
             )
             contenido_detalle.controls.append(acciones)
-        
         contenido_detalle.controls.append(
             ft.Container(
                 content=ft.ElevatedButton("Cerrar Detalle", on_click=cerrar_detalle, width=200),
                 padding=10,
-                alignment=ft.Alignment(0, 0)  # Cambiado de ft.alignment.center
+                alignment=ft.Alignment(0, 0)
             )
         )
-        
         detalle_container.content = ft.Container(
             content=contenido_detalle,
             padding=10,
@@ -230,18 +211,13 @@ def view(content_area, ft):
             width=580
         )
         detalle_container.update()
-    
     def cambiar_estado(id_orden):
         if not orden_seleccionada:
             return
-        
         estado_actual = orden_seleccionada['orden']['estado']
         nuevo_estado = "Enviada" if estado_actual == "Pendiente" else "Recibida"
-        
         print(f"Cambiando orden #{id_orden} de {estado_actual} a {nuevo_estado}")
-        
         resultado = actualizar_estado_orden(id_orden, nuevo_estado)
-        
         if resultado["success"]:
             mostrar_mensaje(resultado["message"])
             cargar_ordenes_pendientes()
@@ -249,20 +225,16 @@ def view(content_area, ft):
             ver_detalle_orden(id_orden)
         else:
             mostrar_mensaje(f"Error: {resultado['error']}")
-    
     def cancelar_orden(id_orden):
         if not orden_seleccionada:
             return
-        
         resultado = actualizar_estado_orden(id_orden, "Cancelada")
-        
         if resultado["success"]:
             mostrar_mensaje(f"Orden #{id_orden} cancelada")
             cargar_ordenes_pendientes()
             cerrar_detalle(None)
         else:
             mostrar_mensaje(f"Error: {resultado['error']}")
-    
     def cerrar_detalle(e):
         nonlocal orden_seleccionada
         orden_seleccionada = None
@@ -271,33 +243,28 @@ def view(content_area, ft):
                 ft.Text("📋", size=40),
                 ft.Text("Seleccione una orden para ver el detalle", color=ft.Colors.GREY, size=16)
             ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-            alignment=ft.Alignment(0, 0),  # Cambiado de ft.alignment.center
+            alignment=ft.Alignment(0, 0),
             height=480
         )
         detalle_container.update()
-    
     def mostrar_mensaje(texto):
         snack = ft.SnackBar(content=ft.Text(texto))
         content_area.page.overlay.append(snack)
         snack.open = True
         content_area.page.update()
-    
     def recargar_todo(e):
         cargar_ordenes_pendientes()
         cargar_ordenes_completadas()
         cerrar_detalle(None)
-    
-    # ===== CONTROLES UI =====
     lista_pendientes = ft.Column(spacing=8, scroll=ft.ScrollMode.AUTO)
     lista_completadas = ft.Column(spacing=8, scroll=ft.ScrollMode.AUTO)
-    
     detalle_container = ft.Container(
         content=ft.Container(
             content=ft.Column([
                 ft.Text("📋", size=40),
                 ft.Text("Seleccione una orden para ver el detalle", color=ft.Colors.GREY, size=16)
             ], alignment=ft.MainAxisAlignment.CENTER, horizontal_alignment=ft.CrossAxisAlignment.CENTER),
-            alignment=ft.Alignment(0, 0),  # Cambiado de ft.alignment.center
+            alignment=ft.Alignment(0, 0),
             height=480
         ),
         padding=10,
@@ -307,20 +274,14 @@ def view(content_area, ft):
         width=600,
         height=500
     )
-    
-    # ===== CONTENIDO PRINCIPAL =====
     contenido_principal = ft.Column([
         ft.Text("📋 LISTA DE ÓRDENES DE REPOSICIÓN", size=28, weight=ft.FontWeight.BOLD),
         ft.Divider(height=15),
-        
         ft.Row([
             ft.ElevatedButton("🔄 Recargar", on_click=recargar_todo),
         ], alignment=ft.MainAxisAlignment.CENTER),
-        
         ft.Container(height=10),
-        
         ft.Row([
-            # Columna izquierda: Listas de órdenes
             ft.Container(
                 content=ft.Column([
                     ft.Container(
@@ -354,10 +315,7 @@ def view(content_area, ft):
                 border_radius=5,
                 bgcolor=ft.Colors.WHITE
             ),
-            
             ft.Container(width=20),
-            
-            # Columna derecha: Detalle de la orden seleccionada
             ft.Container(
                 content=detalle_container,
                 width=600,
@@ -365,10 +323,7 @@ def view(content_area, ft):
                 padding=5
             )
         ], alignment=ft.MainAxisAlignment.CENTER, vertical_alignment=ft.CrossAxisAlignment.START),
-        
     ], spacing=10, horizontal_alignment=ft.CrossAxisAlignment.CENTER, expand=True)
-    
-    # Contenedor blanco centrado
     contenedor_blanco = ft.Container(
         content=contenido_principal,
         bgcolor=ft.Colors.WHITE,
@@ -382,22 +337,17 @@ def view(content_area, ft):
             color=ft.Colors.GREY_300
         )
     )
-    
-    # Centrar perfectamente - usando Alignment(0,0)
     contenido_final = ft.Container(
         content=ft.Row(
             controls=[contenedor_blanco],
             alignment=ft.MainAxisAlignment.CENTER,
             vertical_alignment=ft.CrossAxisAlignment.CENTER
         ),
-        alignment=ft.Alignment(0, 0),  # Cambiado de ft.alignment.center
+        alignment=ft.Alignment(0, 0),
         expand=True,
         bgcolor=ft.Colors.GREY_100
     )
-    
     content_area.content = contenido_final
     content_area.update()
-    
-    # Cargar datos iniciales
     cargar_ordenes_pendientes()
     cargar_ordenes_completadas()

@@ -4,11 +4,6 @@ from sqlalchemy import func, desc, and_
 from libreria_cafe_edd_db.model.enum.tipo_venta import TipoVenta
 from libreria_cafe_edd_db.model.enum.metodo_pago import MetodoPago
 import random
-
-
-
-
-
 def clientesMasCompras():
     session = crear_sesion()
     clientes_top = session.query(
@@ -21,12 +16,10 @@ def clientesMasCompras():
     ).order_by(desc('total_compras')
     ).limit(10).all()
     session.close()
-    
     data = [("ID", "Nombre", "Cédula", "Total Compras")]
     for c in clientes_top:
         data.append((str(c.id), c.nombre, str(c.cedula), str(c.total_compras)))
     return data
-
 def clientesMasGastan():
     session = crear_sesion()
     clientes_top = session.query(
@@ -39,12 +32,10 @@ def clientesMasGastan():
     ).order_by(desc('total_gastado')
     ).limit(10).all()
     session.close()
-    
     data = [("ID", "Nombre", "Cédula", "Total Gastado")]
     for c in clientes_top:
         data.append((str(c.id), c.nombre, str(c.cedula), f"${c.total_gastado:.2f}"))
     return data
-
 def clientesMasProductos():
     session = crear_sesion()
     clientes_top = session.query(
@@ -58,12 +49,10 @@ def clientesMasProductos():
     ).order_by(desc('total_productos')
     ).limit(10).all()
     session.close()
-    
     data = [("ID", "Nombre", "Cédula", "Total Productos")]
     for c in clientes_top:
         data.append((str(c.id), c.nombre, str(c.cedula), str(c.total_productos)))
     return data
-
 def rankingClientes():
     session = crear_sesion()
     ranking = session.query(
@@ -80,20 +69,18 @@ def rankingClientes():
     ).order_by(desc('total_gastado')
     ).all()
     session.close()
-    
     data = [("ID", "Nombre", "Cédula", "Teléfono", "Compras", "Total Gastado", "Items")]
     for c in ranking:
         data.append((
-            str(c.id), 
-            c.nombre, 
-            str(c.cedula), 
+            str(c.id),
+            c.nombre,
+            str(c.cedula),
             str(c.telefono) if c.telefono else "",
-            str(c.num_compras), 
-            f"${c.total_gastado:.2f}", 
+            str(c.num_compras),
+            f"${c.total_gastado:.2f}",
             str(c.items_comprados)
         ))
     return data
-
 def clientesTopPorPeriodo(dias=30):
     session = crear_sesion()
     fecha_limite = date.today() - timedelta(days=dias)
@@ -108,23 +95,19 @@ def clientesTopPorPeriodo(dias=30):
     ).order_by(desc('total_gastado')
     ).limit(10).all()
     session.close()
-    
     data = [("ID", "Nombre", "Cédula", f"Total Últimos {dias} Días")]
     for c in clientes_top:
         data.append((str(c.id), c.nombre, str(c.cedula), f"${c.total_gastado:.2f}"))
     return data
-
 def crear_venta(id_cliente, items, metodo_pago, fecha=None):
     session = crear_sesion()
     try:
         if fecha is None:
             fecha = date.today()
-        
         subtotal = sum(item["cantidad"] * item["precio_unitario"] for item in items)
         iva = subtotal * 0.16
         igtf = subtotal * 0.03 if metodo_pago in [MetodoPago.DIVISA, MetodoPago.TRANSFERENCIA_EXTRANJERA] else 0
         total = subtotal + iva + igtf
-        
         factura = Factura(
             fecha=fecha,
             metodo_pago=metodo_pago,
@@ -136,7 +119,6 @@ def crear_venta(id_cliente, items, metodo_pago, fecha=None):
         )
         session.add(factura)
         session.flush()
-        
         for item in items:
             venta = Venta(
                 cantidad=item["cantidad"],
@@ -147,7 +129,6 @@ def crear_venta(id_cliente, items, metodo_pago, fecha=None):
                 id_factura=factura.id
             )
             session.add(venta)
-            
             if item["tipo"] == TipoVenta.LIBRO:
                 libro = session.query(Libro).get(item["id_producto"])
                 if libro:
@@ -158,7 +139,6 @@ def crear_venta(id_cliente, items, metodo_pago, fecha=None):
                         precio=item["precio_unitario"]
                     )
                     session.add(consumo)
-            
             elif item["tipo"] == TipoVenta.CAFE:
                 consumo = ConsumoCafe(
                     id_cliente=id_cliente,
@@ -167,11 +147,9 @@ def crear_venta(id_cliente, items, metodo_pago, fecha=None):
                     precio=item["precio_unitario"]
                 )
                 session.add(consumo)
-        
         cliente = session.query(Cliente).get(id_cliente)
         if cliente:
             cliente.frecuencia += 1
-        
         session.commit()
         return {"success": True, "factura_id": factura.id, "total": total}
     except Exception as e:
@@ -179,7 +157,6 @@ def crear_venta(id_cliente, items, metodo_pago, fecha=None):
         return {"success": False, "error": str(e)}
     finally:
         session.close()
-
 def obtener_ventas_por_periodo(fecha_inicio, fecha_fin):
     session = crear_sesion()
     ventas = session.query(
@@ -194,7 +171,6 @@ def obtener_ventas_por_periodo(fecha_inicio, fecha_fin):
         and_(Factura.fecha >= fecha_inicio, Factura.fecha <= fecha_fin)
     ).order_by(Factura.fecha.desc()).all()
     session.close()
-    
     data = [("ID", "Fecha", "Cliente", "Cédula", "Método Pago", "Total")]
     for v in ventas:
         data.append((
@@ -206,18 +182,15 @@ def obtener_ventas_por_periodo(fecha_inicio, fecha_fin):
             f"${v.monto_total:.2f}"
         ))
     return data
-
 def obtener_detalle_venta(id_factura):
     session = crear_sesion()
     factura = session.query(Factura).get(id_factura)
     if not factura:
         session.close()
         return None
-    
     ventas = session.query(Venta).filter(Venta.id_factura == id_factura).all()
     cliente = session.query(Cliente).get(factura.id_cliente)
     session.close()
-    
     return {
         "factura": {
             "id": factura.id,
@@ -244,11 +217,9 @@ def obtener_detalle_venta(id_factura):
             for v in ventas
         ]
     }
-
 def ventas_por_dia(fecha=None):
     if fecha is None:
         fecha = date.today()
-    
     session = crear_sesion()
     ventas = session.query(
         func.count(Factura.id).label('num_ventas'),
@@ -256,14 +227,12 @@ def ventas_por_dia(fecha=None):
         func.avg(Factura.monto_total).label('promedio_venta')
     ).filter(Factura.fecha == fecha).first()
     session.close()
-    
     return {
         "fecha": fecha.strftime("%d/%m/%Y"),
         "num_ventas": ventas.num_ventas or 0,
         "total_dia": float(ventas.total_dia or 0),
         "promedio_venta": float(ventas.promedio_venta or 0)
     }
-
 def ingresos_por_metodo_pago(fecha_inicio, fecha_fin):
     session = crear_sesion()
     resultados = session.query(
@@ -274,7 +243,6 @@ def ingresos_por_metodo_pago(fecha_inicio, fecha_fin):
         and_(Factura.fecha >= fecha_inicio, Factura.fecha <= fecha_fin)
     ).group_by(Factura.metodo_pago).all()
     session.close()
-    
     data = [("Método de Pago", "# Transacciones", "Total")]
     for r in resultados:
         data.append((
@@ -283,7 +251,6 @@ def ingresos_por_metodo_pago(fecha_inicio, fecha_fin):
             f"${r.total:.2f}"
         ))
     return data
-
 def verificar_datos_ventas():
     session = crear_sesion()
     try:
@@ -293,7 +260,6 @@ def verificar_datos_ventas():
         print(f"Total de facturas: {total_facturas}")
     finally:
         session.close()
-
 def productos_mas_vendidos(limite=10, tipo=None):
     session = crear_sesion()
     try:
@@ -303,10 +269,8 @@ def productos_mas_vendidos(limite=10, tipo=None):
             func.sum(Venta.cantidad).label('total_vendido'),
             func.sum(Venta.cantidad * Venta.precio).label('ingresos_totales')
         ).group_by(Venta.nombre_mostrado, Venta.tipo)
-        
         if tipo:
             query = query.filter(Venta.tipo == tipo)
-        
         resultados = query.order_by(desc('total_vendido')).limit(limite).all()
         data = [("Producto", "Tipo", "Cantidad Vendida", "Ingresos")]
         for r in resultados:
@@ -319,13 +283,11 @@ def productos_mas_vendidos(limite=10, tipo=None):
         return data
     finally:
         session.close()
-
 def cargar_datos_prueba(force=False):
     session = crear_sesion()
     try:
         if not force and session.query(Cliente).count() > 0:
             return
-        
         if force:
             session.query(Venta).delete()
             session.query(Factura).delete()
@@ -338,40 +300,35 @@ def cargar_datos_prueba(force=False):
             session.query(Cliente).delete()
             session.query(Membresia).delete()
             session.commit()
-        
-        # ===== MEMBRESÍAS =====
         membresia_basica = Membresia(
-            fecha_inicio=date(2025, 1, 1), 
-            fecha_vencimiento=date(2025, 12, 31), 
-            cantidad_libros=3, 
-            descuento_cafe=5, 
-            monto=50000, 
-            cantidad_cafe_gratis=1, 
+            fecha_inicio=date(2025, 1, 1),
+            fecha_vencimiento=date(2025, 12, 31),
+            cantidad_libros=3,
+            descuento_cafe=5,
+            monto=50000,
+            cantidad_cafe_gratis=1,
             tiempo_mesa=60
         )
         membresia_premium = Membresia(
-            fecha_inicio=date(2025, 6, 1), 
-            fecha_vencimiento=date(2026, 5, 31), 
-            cantidad_libros=10, 
-            descuento_cafe=15, 
-            monto=120000, 
-            cantidad_cafe_gratis=3, 
+            fecha_inicio=date(2025, 6, 1),
+            fecha_vencimiento=date(2026, 5, 31),
+            cantidad_libros=10,
+            descuento_cafe=15,
+            monto=120000,
+            cantidad_cafe_gratis=3,
             tiempo_mesa=120
         )
         membresia_vip = Membresia(
-            fecha_inicio=date(2025, 3, 15), 
-            fecha_vencimiento=date(2026, 3, 14), 
-            cantidad_libros=5, 
-            descuento_cafe=10, 
-            monto=85000, 
-            cantidad_cafe_gratis=2, 
+            fecha_inicio=date(2025, 3, 15),
+            fecha_vencimiento=date(2026, 3, 14),
+            cantidad_libros=5,
+            descuento_cafe=10,
+            monto=85000,
+            cantidad_cafe_gratis=2,
             tiempo_mesa=90
         )
-        
         session.add_all([membresia_basica, membresia_premium, membresia_vip])
         session.flush()
-        
-        # ===== CLIENTES =====
         datos_clientes = [
             {"nombre": "Juan Pérez", "cedula": 12345678, "telefono": "0412-1234567", "membresia": membresia_basica},
             {"nombre": "María González", "cedula": 23456789, "telefono": "0414-2345678", "membresia": membresia_premium},
@@ -384,23 +341,19 @@ def cargar_datos_prueba(force=False):
             {"nombre": "Miguel Ángel", "cedula": 90123456, "telefono": "0416-9012345", "membresia": None},
             {"nombre": "Sofía Torres", "cedula": 11223344, "telefono": "0424-1122334", "membresia": membresia_basica},
         ]
-        
         clientes = []
         for d in datos_clientes:
             cliente = Cliente(
-                id_membresia=d["membresia"].id if d["membresia"] else None, 
-                nombre=d["nombre"], 
-                cedula=d["cedula"], 
+                id_membresia=d["membresia"].id if d["membresia"] else None,
+                nombre=d["nombre"],
+                cedula=d["cedula"],
                 fecha_ingreso=date.today() - timedelta(days=random.randint(30, 180)),
                 telefono=d["telefono"]
             )
             session.add(cliente)
             clientes.append(cliente)
         session.flush()
-
-        # ===== FACTURAS Y VENTAS (con más productos) =====
         productos = [
-            # Libros
             ("Cien años de soledad", "LIBRO", 35000),
             ("Don Quijote de la Mancha", "LIBRO", 42000),
             ("El principito", "LIBRO", 28000),
@@ -416,8 +369,6 @@ def cargar_datos_prueba(force=False):
             ("La ciudad y los perros", "LIBRO", 37000),
             ("Pedro Páramo", "LIBRO", 26000),
             ("Ensayo sobre la ceguera", "LIBRO", 39000),
-            
-            # Cafés
             ("Espresso", "CAFE", 4500),
             ("Espresso Doble", "CAFE", 5500),
             ("Cappuccino", "CAFE", 5500),
@@ -439,29 +390,22 @@ def cargar_datos_prueba(force=False):
             ("Café Turco", "CAFE", 5500),
             ("Café Vietnamita", "CAFE", 6500),
         ]
-        
         metodos_pago = [MetodoPago.EFECTIVO, MetodoPago.PUNTO, MetodoPago.TRANSFERENCIA, MetodoPago.DIVISAS]
-        
         for i, cliente in enumerate(clientes):
-            # Más facturas por cliente
             for j in range(random.randint(3, 8)):
                 fecha_factura = date.today() - timedelta(days=random.randint(0, 90))
                 metodo_pago = random.choice(metodos_pago)
-                
                 subtotal = 0
                 num_productos = random.randint(2, 6)
                 ventas_list = []
-                
                 for _ in range(num_productos):
                     producto = random.choice(productos)
                     cantidad = random.randint(1, 4)
                     subtotal += cantidad * producto[2]
                     ventas_list.append((producto[0], producto[1], producto[2], cantidad))
-                
                 iva = subtotal * 0.16
                 igtf = subtotal * 0.03 if metodo_pago == MetodoPago.DIVISAS else 0
                 total = subtotal + iva + igtf
-                
                 factura = Factura(
                     fecha=fecha_factura,
                     metodo_pago=metodo_pago,
@@ -473,7 +417,6 @@ def cargar_datos_prueba(force=False):
                 )
                 session.add(factura)
                 session.flush()
-                
                 for nombre, tipo, precio, cantidad in ventas_list:
                     venta = Venta(
                         cantidad=cantidad,
@@ -484,9 +427,6 @@ def cargar_datos_prueba(force=False):
                         id_factura=factura.id
                     )
                     session.add(venta)
-        
-        # ===== PROVEEDORES =====
-        
         proveedores_data = [
             {"nombre_empresa": "Distribuidora Los Andes", "rif_nit": "J-12345678-9", "telefono": "0212-5551234", "email": "ventas@andes.com"},
             {"nombre_empresa": "Librería Universal", "rif_nit": "J-23456789-0", "telefono": "0212-5555678", "email": "pedidos@universal.com"},
@@ -496,18 +436,13 @@ def cargar_datos_prueba(force=False):
             {"nombre_empresa": "Café Import C.A.", "rif_nit": "J-67890123-4", "telefono": "0212-5554321", "email": "ventas@cafeimport.com"},
             {"nombre_empresa": "Granos Selectos", "rif_nit": "J-78901234-5", "telefono": "0212-5558765", "email": "pedidos@granosselectos.com"},
         ]
-        
         proveedores = []
         for p_data in proveedores_data:
             proveedor = Proveedor(**p_data)
             session.add(proveedor)
             proveedores.append(proveedor)
         session.flush()
-
-        # ===== LIBROS ===== (ampliado)
-        
         libros_data = [
-            # Clásicos
             {"isbn": "978-84-376-0494-7", "titulo": "Cien años de soledad", "stock_actual": 15, "stock_minimo": 8, "precio": 35000},
             {"isbn": "978-84-206-5132-3", "titulo": "Don Quijote de la Mancha", "stock_actual": 12, "stock_minimo": 5, "precio": 42000},
             {"isbn": "978-84-9759-229-5", "titulo": "El principito", "stock_actual": 20, "stock_minimo": 10, "precio": 28000},
@@ -515,8 +450,6 @@ def cargar_datos_prueba(force=False):
             {"isbn": "978-84-376-0495-4", "titulo": "Crimen y castigo", "stock_actual": 6, "stock_minimo": 5, "precio": 38000},
             {"isbn": "978-84-376-0496-1", "titulo": "Rayuela", "stock_actual": 5, "stock_minimo": 4, "precio": 33000},
             {"isbn": "978-84-376-0497-8", "titulo": "El túnel", "stock_actual": 7, "stock_minimo": 3, "precio": 29000},
-            
-            # Más libros
             {"isbn": "978-84-376-0498-5", "titulo": "La sombra del viento", "stock_actual": 10, "stock_minimo": 5, "precio": 36000},
             {"isbn": "978-84-376-0499-2", "titulo": "El código Da Vinci", "stock_actual": 18, "stock_minimo": 7, "precio": 34000},
             {"isbn": "978-84-376-0500-4", "titulo": "Harry Potter y la piedra filosofal", "stock_actual": 25, "stock_minimo": 10, "precio": 45000},
@@ -528,19 +461,13 @@ def cargar_datos_prueba(force=False):
             {"isbn": "978-84-376-0506-6", "titulo": "El amor en los tiempos del cólera", "stock_actual": 13, "stock_minimo": 6, "precio": 36000},
             {"isbn": "978-84-376-0507-3", "titulo": "La casa de los espíritus", "stock_actual": 9, "stock_minimo": 5, "precio": 34000},
         ]
-        
         libros = []
         for l_data in libros_data:
             libro = Libro(**l_data)
             session.add(libro)
             libros.append(libro)
         session.flush()
-
-        # ===== ÓRDENES DE REPOSICIÓN =====
-        
         estados = ["Pendiente", "Enviada", "Recibida", "Cancelada"]
-        
-        # Fechas para las órdenes (últimos 3 meses)
         fechas_orden = [
             date.today() - timedelta(days=85),
             date.today() - timedelta(days=70),
@@ -553,64 +480,43 @@ def cargar_datos_prueba(force=False):
             date.today() - timedelta(days=2),
             date.today(),
         ]
-        
-        # Órdenes de reposición: [proveedor_idx, fecha_idx, estado_idx, [(libro_idx, cantidad)]]
         ordenes_data = [
-            # Proveedor 0 - Los Andes
-            [0, 0, 2, [(0, 15), (1, 10), (2, 8)]],        # Recibida - Cien años, Quijote, Principito
-            [0, 3, 2, [(3, 12), (4, 8), (5, 6)]],         # Recibida - 1984, Crimen, Rayuela
-            [0, 6, 2, [(0, 10), (6, 8), (7, 12)]],        # Recibida - Cien años, El túnel, La sombra
-            
-            # Proveedor 1 - Universal
-            [1, 1, 2, [(2, 25), (8, 10), (9, 15)]],       # Recibida - Principito, El código, Harry Potter
-            [1, 4, 1, [(10, 12), (11, 8)]],                # Enviada - El alquimista, Ficciones
-            [1, 7, 0, [(1, 12), (2, 15), (12, 10)]],      # Pendiente - Quijote, Principito, La ciudad
-            
-            # Proveedor 2 - Planeta
-            [2, 2, 2, [(13, 10), (14, 8), (15, 12)]],     # Recibida - Pedro Páramo, Ensayo, El amor
-            [2, 5, 2, [(0, 10), (16, 10), (8, 8)]],       # Recibida - Cien años, La casa, El código
-            [2, 8, 1, [(3, 10), (4, 5), (5, 8)]],         # Enviada - 1984, Crimen, Rayuela
-            
-            # Proveedor 3 - Books & Co.
-            [3, 2, 2, [(1, 8), (2, 10), (9, 12)]],        # Recibida - Quijote, Principito, Harry Potter
-            [3, 5, 2, [(6, 8), (7, 10), (10, 6)]],        # Recibida - El túnel, La sombra, El alquimista
-            [3, 9, 0, [(0, 15), (3, 10), (11, 8)]],       # Pendiente - Cien años, 1984, Ficciones
-            
-            # Proveedor 4 - Distribuidora del Sur
-            [4, 3, 2, [(4, 10), (5, 10), (12, 8)]],       # Recibida - Crimen, Rayuela, La ciudad
-            [4, 7, 1, [(1, 15), (2, 20), (13, 12)]],      # Enviada - Quijote, Principito, Pedro Páramo
-            [4, 9, 0, [(0, 20), (6, 12), (14, 10)]],      # Pendiente - Cien años, El túnel, Ensayo
-            
-            # Proveedor 5 - Café Import C.A.
-            [5, 1, 2, [(0, 0), (0, 0)]],  # Solo café, no libros
+            [0, 0, 2, [(0, 15), (1, 10), (2, 8)]],
+            [0, 3, 2, [(3, 12), (4, 8), (5, 6)]],
+            [0, 6, 2, [(0, 10), (6, 8), (7, 12)]],
+            [1, 1, 2, [(2, 25), (8, 10), (9, 15)]],
+            [1, 4, 1, [(10, 12), (11, 8)]],
+            [1, 7, 0, [(1, 12), (2, 15), (12, 10)]],
+            [2, 2, 2, [(13, 10), (14, 8), (15, 12)]],
+            [2, 5, 2, [(0, 10), (16, 10), (8, 8)]],
+            [2, 8, 1, [(3, 10), (4, 5), (5, 8)]],
+            [3, 2, 2, [(1, 8), (2, 10), (9, 12)]],
+            [3, 5, 2, [(6, 8), (7, 10), (10, 6)]],
+            [3, 9, 0, [(0, 15), (3, 10), (11, 8)]],
+            [4, 3, 2, [(4, 10), (5, 10), (12, 8)]],
+            [4, 7, 1, [(1, 15), (2, 20), (13, 12)]],
+            [4, 9, 0, [(0, 20), (6, 12), (14, 10)]],
+            [5, 1, 2, [(0, 0), (0, 0)]],
             [5, 4, 2, [(0, 0), (0, 0)]],
             [5, 8, 1, [(0, 0), (0, 0)]],
-            
-            # Proveedor 6 - Granos Selectos
             [6, 2, 2, [(0, 0), (0, 0)]],
             [6, 6, 2, [(0, 0), (0, 0)]],
             [6, 9, 0, [(0, 0), (0, 0)]],
         ]
-        
         for o_data in ordenes_data:
             proveedor_idx, fecha_idx, estado_idx, detalles = o_data
             fecha_solicitud = fechas_orden[fecha_idx]
-            
-            # Calcular días de entrega según estado
-            if estado_idx == 2:  # Recibida
+            if estado_idx == 2:
                 fecha_entrega = fecha_solicitud + timedelta(days=random.randint(3, 8))
-            elif estado_idx == 1:  # Enviada
+            elif estado_idx == 1:
                 fecha_entrega = None
-            else:  # Pendiente o Cancelada
+            else:
                 fecha_entrega = None
-            
-            # Calcular total de la orden
             total_orden = 0
             for libro_idx, cantidad in detalles:
                 if libro_idx < len(libros) and cantidad > 0:
                     total_orden += libros[libro_idx].precio * cantidad
-            
-            if total_orden > 0:  # Solo crear orden si tiene productos
+            if total_orden > 0:
                 orden = OrdenReposicion(
                     id_proveedor=proveedores[proveedor_idx].id,
                     fecha_ingreso=fecha_solicitud - timedelta(days=random.randint(0, 2)),
@@ -621,7 +527,6 @@ def cargar_datos_prueba(force=False):
                 )
                 session.add(orden)
                 session.flush()
-                
                 for libro_idx, cantidad in detalles:
                     if libro_idx < len(libros) and cantidad > 0:
                         detalle = DetallesReposicion(
@@ -631,14 +536,9 @@ def cargar_datos_prueba(force=False):
                             precio=float(libros[libro_idx].precio)
                         )
                         session.add(detalle)
-                        
-                        # Actualizar stock si la orden ya fue recibida
-                        if estado_idx == 2:  # Recibida
+                        if estado_idx == 2:
                             libros[libro_idx].stock_actual += cantidad
-        
         session.commit()
-        
-        # Mostrar resumen
         print("\n" + "="*60)
         print("DATOS DE PRUEBA CARGADOS EXITOSAMENTE")
         print("="*60)
@@ -651,29 +551,12 @@ def cargar_datos_prueba(force=False):
         print(f"Órdenes de reposición: {session.query(OrdenReposicion).count()}")
         print(f"Detalles de reposición: {session.query(DetallesReposicion).count()}")
         print("="*60)
-        
     except Exception as e:
         session.rollback()
         print(f"Error al cargar datos: {e}")
         raise e
     finally:
         session.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def compras_por_proveedor(fecha_inicio=None, fecha_fin=None):
     """Compras agrupadas por proveedor en un período"""
     session = crear_sesion()
@@ -688,16 +571,13 @@ def compras_por_proveedor(fecha_inicio=None, fecha_fin=None):
         ).join(OrdenReposicion, Proveedor.id == OrdenReposicion.id_proveedor
         ).join(DetallesReposicion, OrdenReposicion.id == DetallesReposicion.id_orden
         ).group_by(Proveedor.id, Proveedor.nombre_empresa, Proveedor.rif_nit)
-        
         if fecha_inicio and fecha_fin:
             query = query.filter(
-                and_(OrdenReposicion.fecha_solicitud >= fecha_inicio, 
+                and_(OrdenReposicion.fecha_solicitud >= fecha_inicio,
                      OrdenReposicion.fecha_solicitud <= fecha_fin)
             )
-        
         resultados = query.order_by(desc('total_compras')).all()
         session.close()
-        
         data = [("ID", "Proveedor", "RIF", "Órdenes", "Total Comprado", "Libros")]
         for r in resultados:
             data.append((
@@ -711,7 +591,6 @@ def compras_por_proveedor(fecha_inicio=None, fecha_fin=None):
         return data
     finally:
         session.close()
-
 def libros_mas_reordenados(limite=10):
     """Libros que más se han reordenado a proveedores"""
     session = crear_sesion()
@@ -728,7 +607,6 @@ def libros_mas_reordenados(limite=10):
         ).order_by(desc('total_reordenado')
         ).limit(limite).all()
         session.close()
-        
         data = [("ID", "ISBN", "Título", "Total Reordenado", "Veces", "Costo Total")]
         for r in resultados:
             data.append((
@@ -742,7 +620,6 @@ def libros_mas_reordenados(limite=10):
         return data
     finally:
         session.close()
-
 def ordenes_reposicion_por_estado():
     """Órdenes de reposición agrupadas por estado"""
     session = crear_sesion()
@@ -753,7 +630,6 @@ def ordenes_reposicion_por_estado():
             func.sum(OrdenReposicion.total_orden).label('monto_total')
         ).group_by(OrdenReposicion.estado).all()
         session.close()
-        
         data = [("Estado", "N° Órdenes", "Monto Total")]
         for r in resultados:
             data.append((
@@ -764,7 +640,6 @@ def ordenes_reposicion_por_estado():
         return data
     finally:
         session.close()
-
 def proveedores_tiempo_entrega():
     """Tiempo promedio de entrega por proveedor"""
     session = crear_sesion()
@@ -773,7 +648,7 @@ def proveedores_tiempo_entrega():
             Proveedor.id,
             Proveedor.nombre_empresa,
             func.avg(
-                func.julianday(OrdenReposicion.fecha_entrega) - 
+                func.julianday(OrdenReposicion.fecha_entrega) -
                 func.julianday(OrdenReposicion.fecha_solicitud)
             ).label('dias_promedio'),
             func.count(OrdenReposicion.id).label('ordenes_completadas')
@@ -782,7 +657,6 @@ def proveedores_tiempo_entrega():
         ).group_by(Proveedor.id, Proveedor.nombre_empresa
         ).all()
         session.close()
-        
         data = [("ID", "Proveedor", "Días Promedio", "Órdenes")]
         for r in resultados:
             data.append((
@@ -794,12 +668,10 @@ def proveedores_tiempo_entrega():
         return data
     finally:
         session.close()
-
 def ordenes_por_mes(año=None):
     """Órdenes de reposición por mes"""
     if año is None:
         año = date.today().year
-    
     session = crear_sesion()
     try:
         resultados = session.query(
@@ -812,9 +684,7 @@ def ordenes_por_mes(año=None):
             func.extract('month', OrdenReposicion.fecha_solicitud)
         ).order_by('mes').all()
         session.close()
-        
         meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-        
         data = [("Mes", "N° Órdenes", "Total Comprado")]
         for r in resultados:
             data.append((
@@ -825,14 +695,6 @@ def ordenes_por_mes(año=None):
         return data
     finally:
         session.close()
-
-
-
-
-
-
-
-
 def proveedores_mas_compras(limite=10):
     """Proveedores con mayor monto de compras"""
     session = crear_sesion()
@@ -848,7 +710,6 @@ def proveedores_mas_compras(limite=10):
         ).order_by(desc('total_compras')
         ).limit(limite).all()
         session.close()
-        
         data = [("ID", "Proveedor", "RIF", "N° Órdenes", "Total Compras")]
         for r in resultados:
             data.append((
@@ -861,7 +722,6 @@ def proveedores_mas_compras(limite=10):
         return data
     finally:
         session.close()
-
 def libros_bajo_stock():
     """Libros cuyo stock actual está por debajo del mínimo"""
     session = crear_sesion()
@@ -876,7 +736,6 @@ def libros_bajo_stock():
         ).filter(Libro.stock_actual < Libro.stock_minimo
         ).order_by(desc('faltante')).all()
         session.close()
-        
         data = [("ID", "ISBN", "Título", "Stock Actual", "Stock Mínimo", "Faltante")]
         for r in resultados:
             data.append((
@@ -890,7 +749,6 @@ def libros_bajo_stock():
         return data
     finally:
         session.close()
-
 def ordenes_pendientes():
     """Órdenes de reposición pendientes y su detalle"""
     session = crear_sesion()
@@ -907,7 +765,6 @@ def ordenes_pendientes():
         ).group_by(OrdenReposicion.id, OrdenReposicion.fecha_solicitud, Proveedor.nombre_empresa, OrdenReposicion.total_orden
         ).order_by(OrdenReposicion.fecha_solicitud).all()
         session.close()
-        
         data = [("ID Orden", "Fecha Solicitud", "Proveedor", "Total", "Items")]
         for r in resultados:
             data.append((
@@ -920,12 +777,10 @@ def ordenes_pendientes():
         return data
     finally:
         session.close()
-
 def resumen_compras_anual(año=None):
     """Resumen de compras agrupado por mes y proveedor"""
     if año is None:
         año = date.today().year
-    
     session = crear_sesion()
     try:
         resultados = session.query(
@@ -940,9 +795,7 @@ def resumen_compras_anual(año=None):
             Proveedor.nombre_empresa
         ).order_by('mes', desc('total_mes')).all()
         session.close()
-        
         meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-        
         data = [("Mes", "Proveedor", "Total Comprado")]
         for r in resultados:
             data.append((
