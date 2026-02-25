@@ -1,5 +1,13 @@
-from reportes.models import clientesMasGastan, clientesMasCompras, clientesMasProductos, rankingClientes, clientesTopPorPeriodo
+# compras.py
+from reportes.models import (
+    compras_por_proveedor,
+    libros_mas_reordenados,
+    ordenes_reposicion_por_estado,
+    proveedores_tiempo_entrega,
+    ordenes_por_mes
+)
 from reportes.pdf import getPdfTable
+from datetime import date, timedelta
 
 def view(content_area, ft):
     def dropdown_changed(e):
@@ -7,43 +15,44 @@ def view(content_area, ft):
     
     def generar_reporte(e):
         print(f"Valor seleccionado: {dropdown.value}")
-        if dropdown.value == "clienteMasCompras":
-            data = clientesMasCompras()
-            print(f"Datos obtenidos: {len(data)-1} registros")
+        
+        if dropdown.value == "comprasProveedor":
+            fin = date.today()
+            inicio = fin - timedelta(days=90)
+            data = compras_por_proveedor(inicio, fin)
             getPdfTable(data)
-            print("Reporte de clientes más compradores ")
-        elif dropdown.value == "clienteMasGastan":
-            data = clientesMasGastan()
+            
+        elif dropdown.value == "librosReordenados":
+            data = libros_mas_reordenados()
             getPdfTable(data)
-            print("Reporte de clientes que más gastan ")
-        elif dropdown.value == "clienteMasProductos":
-            data = clientesMasProductos()
+            
+        elif dropdown.value == "ordenesEstado":
+            data = ordenes_reposicion_por_estado()
             getPdfTable(data)
-            print("Reporte de clientes con más productos ")
-        elif dropdown.value == "ranking":
-            data = rankingClientes()
+            
+        elif dropdown.value == "tiempoEntrega":
+            data = proveedores_tiempo_entrega()
             getPdfTable(data)
-            print("Reporte ranking de clientes ")
-        elif dropdown.value == "periodo":
-            data = clientesTopPorPeriodo()
+            
+        elif dropdown.value == "ordenesMes":
+            data = ordenes_por_mes()
             getPdfTable(data)
-            print("Reporte clientes por período ")
     
     dropdown = ft.Dropdown(
         label="Seleccionar reporte",
         hint_text="Elige una opción...",
-        width=400,
+        width=450,
         options=[
-            ft.dropdown.Option("clienteMasCompras", "Clientes más compradores"),
-            ft.dropdown.Option("clienteMasGastan", "Clientes que más gastan"),
-            ft.dropdown.Option("clienteMasProductos", "Clientes con más productos"),
-            ft.dropdown.Option("ranking", "Ranking completo de clientes"),
-            ft.dropdown.Option("periodo", "Clientes de los ultimos 30 días"),
+            ft.dropdown.Option("comprasProveedor", "Compras por proveedor (últimos 90 días)"),
+            ft.dropdown.Option("librosReordenados", "Libros más reordenados"),
+            ft.dropdown.Option("ordenesEstado", "Órdenes por estado"),
+            ft.dropdown.Option("tiempoEntrega", "Tiempo de entrega por proveedor"),
+            ft.dropdown.Option("ordenesMes", "Órdenes por mes"),
         ],
     )
     
     content_area.content = ft.Column([
-        ft.Text("REPORTES DE COMPRAS", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("REPORTES DE COMPRAS A PROVEEDORES", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
         ft.Container(
             content=ft.Column([
