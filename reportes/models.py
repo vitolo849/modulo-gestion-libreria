@@ -320,7 +320,6 @@ def productos_mas_vendidos(limite=10, tipo=None):
     finally:
         session.close()
 
-
 def cargar_datos_prueba(force=False):
     session = crear_sesion()
     try:
@@ -379,6 +378,11 @@ def cargar_datos_prueba(force=False):
             {"nombre": "Carlos Rodríguez", "cedula": 34567890, "telefono": "0426-3456789", "membresia": None},
             {"nombre": "Ana Martínez", "cedula": 45678901, "telefono": "0416-4567890", "membresia": membresia_vip},
             {"nombre": "Luis Sánchez", "cedula": 56789012, "telefono": "0424-5678901", "membresia": membresia_basica},
+            {"nombre": "Carmen López", "cedula": 67890123, "telefono": "0412-6789012", "membresia": None},
+            {"nombre": "José García", "cedula": 78901234, "telefono": "0414-7890123", "membresia": membresia_premium},
+            {"nombre": "Laura Fernández", "cedula": 89012345, "telefono": "0426-8901234", "membresia": membresia_vip},
+            {"nombre": "Miguel Ángel", "cedula": 90123456, "telefono": "0416-9012345", "membresia": None},
+            {"nombre": "Sofía Torres", "cedula": 11223344, "telefono": "0424-1122334", "membresia": membresia_basica},
         ]
         
         clientes = []
@@ -394,30 +398,63 @@ def cargar_datos_prueba(force=False):
             clientes.append(cliente)
         session.flush()
 
-        # ===== FACTURAS Y VENTAS (para reportes de ventas) =====
+        # ===== FACTURAS Y VENTAS (con más productos) =====
         productos = [
+            # Libros
             ("Cien años de soledad", "LIBRO", 35000),
-            ("Don Quijote", "LIBRO", 42000),
+            ("Don Quijote de la Mancha", "LIBRO", 42000),
             ("El principito", "LIBRO", 28000),
             ("1984", "LIBRO", 32000),
+            ("Crimen y castigo", "LIBRO", 38000),
+            ("Rayuela", "LIBRO", 33000),
+            ("El túnel", "LIBRO", 29000),
+            ("La sombra del viento", "LIBRO", 36000),
+            ("El código Da Vinci", "LIBRO", 34000),
+            ("Harry Potter y la piedra filosofal", "LIBRO", 45000),
+            ("El alquimista", "LIBRO", 30000),
+            ("Ficciones", "LIBRO", 31000),
+            ("La ciudad y los perros", "LIBRO", 37000),
+            ("Pedro Páramo", "LIBRO", 26000),
+            ("Ensayo sobre la ceguera", "LIBRO", 39000),
+            
+            # Cafés
             ("Espresso", "CAFE", 4500),
+            ("Espresso Doble", "CAFE", 5500),
             ("Cappuccino", "CAFE", 5500),
+            ("Cappuccino Vainilla", "CAFE", 6500),
+            ("Latte", "CAFE", 6000),
+            ("Latte Caramelo", "CAFE", 7000),
+            ("Mocha", "CAFE", 6500),
+            ("Mocha Blanco", "CAFE", 7500),
+            ("Americano", "CAFE", 4000),
+            ("Americano Grande", "CAFE", 5000),
+            ("Macchiato", "CAFE", 5000),
+            ("Macchiato Caramelo", "CAFE", 6000),
+            ("Frappé", "CAFE", 7000),
+            ("Frappé Mocha", "CAFE", 8000),
+            ("Café con leche", "CAFE", 4800),
+            ("Café con leche Grande", "CAFE", 5800),
+            ("Affogato", "CAFE", 7500),
+            ("Irish coffee", "CAFE", 8000),
+            ("Café Turco", "CAFE", 5500),
+            ("Café Vietnamita", "CAFE", 6500),
         ]
         
         metodos_pago = [MetodoPago.EFECTIVO, MetodoPago.PUNTO, MetodoPago.TRANSFERENCIA, MetodoPago.DIVISAS]
         
         for i, cliente in enumerate(clientes):
-            for j in range(random.randint(2, 5)):
-                fecha_factura = date.today() - timedelta(days=random.randint(0, 60))
+            # Más facturas por cliente
+            for j in range(random.randint(3, 8)):
+                fecha_factura = date.today() - timedelta(days=random.randint(0, 90))
                 metodo_pago = random.choice(metodos_pago)
                 
                 subtotal = 0
-                num_productos = random.randint(1, 4)
+                num_productos = random.randint(2, 6)
                 ventas_list = []
                 
                 for _ in range(num_productos):
                     producto = random.choice(productos)
-                    cantidad = random.randint(1, 3)
+                    cantidad = random.randint(1, 4)
                     subtotal += cantidad * producto[2]
                     ventas_list.append((producto[0], producto[1], producto[2], cantidad))
                 
@@ -456,6 +493,8 @@ def cargar_datos_prueba(force=False):
             {"nombre_empresa": "Editorial Planeta", "rif_nit": "J-34567890-1", "telefono": "0212-5559012", "email": "ventas@planeta.com"},
             {"nombre_empresa": "Books & Co.", "rif_nit": "J-45678901-2", "telefono": "0212-5553456", "email": "info@booksco.com"},
             {"nombre_empresa": "Distribuidora del Sur", "rif_nit": "J-56789012-3", "telefono": "0212-5557890", "email": "ventas@south.com"},
+            {"nombre_empresa": "Café Import C.A.", "rif_nit": "J-67890123-4", "telefono": "0212-5554321", "email": "ventas@cafeimport.com"},
+            {"nombre_empresa": "Granos Selectos", "rif_nit": "J-78901234-5", "telefono": "0212-5558765", "email": "pedidos@granosselectos.com"},
         ]
         
         proveedores = []
@@ -465,9 +504,10 @@ def cargar_datos_prueba(force=False):
             proveedores.append(proveedor)
         session.flush()
 
-        # ===== LIBROS =====
+        # ===== LIBROS ===== (ampliado)
         
         libros_data = [
+            # Clásicos
             {"isbn": "978-84-376-0494-7", "titulo": "Cien años de soledad", "stock_actual": 15, "stock_minimo": 8, "precio": 35000},
             {"isbn": "978-84-206-5132-3", "titulo": "Don Quijote de la Mancha", "stock_actual": 12, "stock_minimo": 5, "precio": 42000},
             {"isbn": "978-84-9759-229-5", "titulo": "El principito", "stock_actual": 20, "stock_minimo": 10, "precio": 28000},
@@ -475,6 +515,18 @@ def cargar_datos_prueba(force=False):
             {"isbn": "978-84-376-0495-4", "titulo": "Crimen y castigo", "stock_actual": 6, "stock_minimo": 5, "precio": 38000},
             {"isbn": "978-84-376-0496-1", "titulo": "Rayuela", "stock_actual": 5, "stock_minimo": 4, "precio": 33000},
             {"isbn": "978-84-376-0497-8", "titulo": "El túnel", "stock_actual": 7, "stock_minimo": 3, "precio": 29000},
+            
+            # Más libros
+            {"isbn": "978-84-376-0498-5", "titulo": "La sombra del viento", "stock_actual": 10, "stock_minimo": 5, "precio": 36000},
+            {"isbn": "978-84-376-0499-2", "titulo": "El código Da Vinci", "stock_actual": 18, "stock_minimo": 7, "precio": 34000},
+            {"isbn": "978-84-376-0500-4", "titulo": "Harry Potter y la piedra filosofal", "stock_actual": 25, "stock_minimo": 10, "precio": 45000},
+            {"isbn": "978-84-376-0501-1", "titulo": "El alquimista", "stock_actual": 14, "stock_minimo": 6, "precio": 30000},
+            {"isbn": "978-84-376-0502-8", "titulo": "Ficciones", "stock_actual": 9, "stock_minimo": 4, "precio": 31000},
+            {"isbn": "978-84-376-0503-5", "titulo": "La ciudad y los perros", "stock_actual": 7, "stock_minimo": 4, "precio": 37000},
+            {"isbn": "978-84-376-0504-2", "titulo": "Pedro Páramo", "stock_actual": 11, "stock_minimo": 5, "precio": 26000},
+            {"isbn": "978-84-376-0505-9", "titulo": "Ensayo sobre la ceguera", "stock_actual": 8, "stock_minimo": 4, "precio": 39000},
+            {"isbn": "978-84-376-0506-6", "titulo": "El amor en los tiempos del cólera", "stock_actual": 13, "stock_minimo": 6, "precio": 36000},
+            {"isbn": "978-84-376-0507-3", "titulo": "La casa de los espíritus", "stock_actual": 9, "stock_minimo": 5, "precio": 34000},
         ]
         
         libros = []
@@ -505,29 +557,39 @@ def cargar_datos_prueba(force=False):
         # Órdenes de reposición: [proveedor_idx, fecha_idx, estado_idx, [(libro_idx, cantidad)]]
         ordenes_data = [
             # Proveedor 0 - Los Andes
-            [0, 0, 2, [(0, 15), (1, 10)]],      # Recibida - Cien años (15), Quijote (10)
-            [0, 3, 2, [(2, 20), (3, 12)]],      # Recibida - Principito (20), 1984 (12)
-            [0, 6, 2, [(0, 10), (4, 8)]],       # Recibida - Cien años (10), Crimen (8)
+            [0, 0, 2, [(0, 15), (1, 10), (2, 8)]],        # Recibida - Cien años, Quijote, Principito
+            [0, 3, 2, [(3, 12), (4, 8), (5, 6)]],         # Recibida - 1984, Crimen, Rayuela
+            [0, 6, 2, [(0, 10), (6, 8), (7, 12)]],        # Recibida - Cien años, El túnel, La sombra
             
             # Proveedor 1 - Universal
-            [1, 1, 2, [(2, 25), (5, 10)]],      # Recibida - Principito (25), Rayuela (10)
-            [1, 4, 1, [(3, 15), (6, 8)]],       # Enviada - 1984 (15), El túnel (8)
-            [1, 7, 0, [(1, 12), (2, 15)]],      # Pendiente - Quijote (12), Principito (15)
+            [1, 1, 2, [(2, 25), (8, 10), (9, 15)]],       # Recibida - Principito, El código, Harry Potter
+            [1, 4, 1, [(10, 12), (11, 8)]],                # Enviada - El alquimista, Ficciones
+            [1, 7, 0, [(1, 12), (2, 15), (12, 10)]],      # Pendiente - Quijote, Principito, La ciudad
             
             # Proveedor 2 - Planeta
-            [2, 2, 2, [(4, 12), (5, 8)]],       # Recibida - Crimen (12), Rayuela (8)
-            [2, 5, 2, [(0, 10), (6, 10)]],      # Recibida - Cien años (10), El túnel (10)
-            [2, 8, 1, [(3, 10), (4, 5)]],       # Enviada - 1984 (10), Crimen (5)
+            [2, 2, 2, [(13, 10), (14, 8), (15, 12)]],     # Recibida - Pedro Páramo, Ensayo, El amor
+            [2, 5, 2, [(0, 10), (16, 10), (8, 8)]],       # Recibida - Cien años, La casa, El código
+            [2, 8, 1, [(3, 10), (4, 5), (5, 8)]],         # Enviada - 1984, Crimen, Rayuela
             
             # Proveedor 3 - Books & Co.
-            [3, 2, 2, [(1, 8), (2, 10)]],       # Recibida - Quijote (8), Principito (10)
-            [3, 5, 2, [(5, 12), (6, 8)]],       # Recibida - Rayuela (12), El túnel (8)
-            [3, 9, 0, [(0, 15), (3, 10)]],      # Pendiente - Cien años (15), 1984 (10)
+            [3, 2, 2, [(1, 8), (2, 10), (9, 12)]],        # Recibida - Quijote, Principito, Harry Potter
+            [3, 5, 2, [(6, 8), (7, 10), (10, 6)]],        # Recibida - El túnel, La sombra, El alquimista
+            [3, 9, 0, [(0, 15), (3, 10), (11, 8)]],       # Pendiente - Cien años, 1984, Ficciones
             
             # Proveedor 4 - Distribuidora del Sur
-            [4, 3, 2, [(4, 10), (5, 10)]],      # Recibida - Crimen (10), Rayuela (10)
-            [4, 7, 1, [(1, 15), (2, 20)]],      # Enviada - Quijote (15), Principito (20)
-            [4, 9, 0, [(0, 20), (6, 12)]],      # Pendiente - Cien años (20), El túnel (12)
+            [4, 3, 2, [(4, 10), (5, 10), (12, 8)]],       # Recibida - Crimen, Rayuela, La ciudad
+            [4, 7, 1, [(1, 15), (2, 20), (13, 12)]],      # Enviada - Quijote, Principito, Pedro Páramo
+            [4, 9, 0, [(0, 20), (6, 12), (14, 10)]],      # Pendiente - Cien años, El túnel, Ensayo
+            
+            # Proveedor 5 - Café Import C.A.
+            [5, 1, 2, [(0, 0), (0, 0)]],  # Solo café, no libros
+            [5, 4, 2, [(0, 0), (0, 0)]],
+            [5, 8, 1, [(0, 0), (0, 0)]],
+            
+            # Proveedor 6 - Granos Selectos
+            [6, 2, 2, [(0, 0), (0, 0)]],
+            [6, 6, 2, [(0, 0), (0, 0)]],
+            [6, 9, 0, [(0, 0), (0, 0)]],
         ]
         
         for o_data in ordenes_data:
@@ -545,31 +607,34 @@ def cargar_datos_prueba(force=False):
             # Calcular total de la orden
             total_orden = 0
             for libro_idx, cantidad in detalles:
-                total_orden += libros[libro_idx].precio * cantidad
+                if libro_idx < len(libros) and cantidad > 0:
+                    total_orden += libros[libro_idx].precio * cantidad
             
-            orden = OrdenReposicion(
-                id_proveedor=proveedores[proveedor_idx].id,
-                fecha_ingreso=fecha_solicitud - timedelta(days=random.randint(0, 2)),
-                fecha_solicitud=fecha_solicitud,
-                fecha_entrega=fecha_entrega,
-                estado=estados[estado_idx],
-                total_orden=float(total_orden)
-            )
-            session.add(orden)
-            session.flush()
-            
-            for libro_idx, cantidad in detalles:
-                detalle = DetallesReposicion(
-                    id_orden=orden.id,
-                    id_libro=libros[libro_idx].id,
-                    cantidad=cantidad,
-                    precio=float(libros[libro_idx].precio)
+            if total_orden > 0:  # Solo crear orden si tiene productos
+                orden = OrdenReposicion(
+                    id_proveedor=proveedores[proveedor_idx].id,
+                    fecha_ingreso=fecha_solicitud - timedelta(days=random.randint(0, 2)),
+                    fecha_solicitud=fecha_solicitud,
+                    fecha_entrega=fecha_entrega,
+                    estado=estados[estado_idx],
+                    total_orden=float(total_orden)
                 )
-                session.add(detalle)
+                session.add(orden)
+                session.flush()
                 
-                # Actualizar stock si la orden ya fue recibida
-                if estado_idx == 2:  # Recibida
-                    libros[libro_idx].stock_actual += cantidad
+                for libro_idx, cantidad in detalles:
+                    if libro_idx < len(libros) and cantidad > 0:
+                        detalle = DetallesReposicion(
+                            id_orden=orden.id,
+                            id_libro=libros[libro_idx].id,
+                            cantidad=cantidad,
+                            precio=float(libros[libro_idx].precio)
+                        )
+                        session.add(detalle)
+                        
+                        # Actualizar stock si la orden ya fue recibida
+                        if estado_idx == 2:  # Recibida
+                            libros[libro_idx].stock_actual += cantidad
         
         session.commit()
         
@@ -593,8 +658,6 @@ def cargar_datos_prueba(force=False):
         raise e
     finally:
         session.close()
-
-
 
 
 
@@ -762,16 +825,6 @@ def ordenes_por_mes(año=None):
         return data
     finally:
         session.close()
-
-
-
-
-
-
-
-
-
-
 
 
 
