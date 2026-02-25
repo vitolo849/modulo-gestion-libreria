@@ -1,5 +1,16 @@
-from reportes.models import clientesMasGastan, clientesMasCompras, clientesMasProductos, rankingClientes, clientesTopPorPeriodo
+# proveedores.py
+from reportes.models import (
+    compras_por_proveedor,
+    libros_mas_reordenados,
+    ordenes_reposicion_por_estado,
+    proveedores_tiempo_entrega,
+    ordenes_por_mes,
+    proveedores_mas_compras,
+    libros_bajo_stock,
+    ordenes_pendientes
+)
 from reportes.pdf import getPdfTable
+from datetime import date, timedelta
 
 def view(content_area, ft):
     def dropdown_changed(e):
@@ -7,43 +18,67 @@ def view(content_area, ft):
     
     def generar_reporte(e):
         print(f"Valor seleccionado: {dropdown.value}")
-        if dropdown.value == "clienteMasCompras":
-            data = clientesMasCompras()
-            print(f"Datos obtenidos: {len(data)-1} registros")
+        
+        if dropdown.value == "comprasProveedor":
+            fin = date.today()
+            inicio = fin - timedelta(days=90)
+            data = compras_por_proveedor(inicio, fin)
             getPdfTable(data)
-            print("Reporte de clientes más compradores ")
-        elif dropdown.value == "clienteMasGastan":
-            data = clientesMasGastan()
+            print("Reporte de compras por proveedor")
+            
+        elif dropdown.value == "proveedoresMasCompras":
+            data = proveedores_mas_compras()
             getPdfTable(data)
-            print("Reporte de clientes que más gastan ")
-        elif dropdown.value == "clienteMasProductos":
-            data = clientesMasProductos()
+            print("Reporte de proveedores con más compras")
+            
+        elif dropdown.value == "librosReordenados":
+            data = libros_mas_reordenados()
             getPdfTable(data)
-            print("Reporte de clientes con más productos ")
-        elif dropdown.value == "ranking":
-            data = rankingClientes()
+            print("Reporte de libros más reordenados")
+            
+        elif dropdown.value == "ordenesEstado":
+            data = ordenes_reposicion_por_estado()
             getPdfTable(data)
-            print("Reporte ranking de clientes ")
-        elif dropdown.value == "periodo":
-            data = clientesTopPorPeriodo()
+            print("Reporte de órdenes por estado")
+            
+        elif dropdown.value == "tiempoEntrega":
+            data = proveedores_tiempo_entrega()
             getPdfTable(data)
-            print("Reporte clientes por período ")
+            print("Reporte de tiempo de entrega por proveedor")
+            
+        elif dropdown.value == "ordenesMes":
+            data = ordenes_por_mes()
+            getPdfTable(data)
+            print("Reporte de órdenes por mes")
+            
+        elif dropdown.value == "librosBajoStock":
+            data = libros_bajo_stock()
+            getPdfTable(data)
+            print("Reporte de libros bajo stock mínimo")
+            
+        elif dropdown.value == "ordenesPendientes":
+            data = ordenes_pendientes()
+            getPdfTable(data)
+            print("Reporte de órdenes pendientes")
     
     dropdown = ft.Dropdown(
         label="Seleccionar reporte",
         hint_text="Elige una opción...",
-        width=400,
+        width=500,
         options=[
-            ft.dropdown.Option("clienteMasCompras", "Clientes más compradores"),
-            ft.dropdown.Option("clienteMasGastan", "Clientes que más gastan"),
-            ft.dropdown.Option("clienteMasProductos", "Clientes con más productos"),
-            ft.dropdown.Option("ranking", "Ranking completo de clientes"),
-            ft.dropdown.Option("periodo", "Clientes de los ultimos 30 días"),
+            ft.dropdown.Option("comprasProveedor", "Compras por proveedor (últimos 90 días)"),
+            ft.dropdown.Option("proveedoresMasCompras", "Proveedores con más compras"),
+            ft.dropdown.Option("librosReordenados", "Libros más reordenados"),
+            ft.dropdown.Option("ordenesEstado", "Órdenes de reposición por estado"),
+            ft.dropdown.Option("tiempoEntrega", "Tiempo de entrega por proveedor"),
+            ft.dropdown.Option("ordenesMes", "Órdenes por mes"),
+            ft.dropdown.Option("librosBajoStock", "Libros bajo stock mínimo"),
+            ft.dropdown.Option("ordenesPendientes", "Órdenes pendientes"),
         ],
     )
     
     content_area.content = ft.Column([
-        ft.Text("REPORTES DE PROVEEDORES", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("REPORTES DE PROVEEDORES Y COMPRAS", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
         ft.Container(
             content=ft.Column([

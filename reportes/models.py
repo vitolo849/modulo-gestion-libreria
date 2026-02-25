@@ -762,3 +762,141 @@ def ordenes_por_mes(año=None):
         return data
     finally:
         session.close()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def proveedores_mas_compras(limite=10):
+    """Proveedores con mayor monto de compras"""
+    session = crear_sesion()
+    try:
+        resultados = session.query(
+            Proveedor.id,
+            Proveedor.nombre_empresa,
+            Proveedor.rif_nit,
+            func.count(OrdenReposicion.id).label('num_ordenes'),
+            func.sum(OrdenReposicion.total_orden).label('total_compras')
+        ).join(OrdenReposicion, Proveedor.id == OrdenReposicion.id_proveedor
+        ).group_by(Proveedor.id, Proveedor.nombre_empresa, Proveedor.rif_nit
+        ).order_by(desc('total_compras')
+        ).limit(limite).all()
+        session.close()
+        
+        data = [("ID", "Proveedor", "RIF", "N° Órdenes", "Total Compras")]
+        for r in resultados:
+            data.append((
+                str(r.id),
+                r.nombre_empresa,
+                r.rif_nit,
+                str(r.num_ordenes),
+                f"${r.total_compras:.2f}"
+            ))
+        return data
+    finally:
+        session.close()
+
+def libros_bajo_stock():
+    """Libros cuyo stock actual está por debajo del mínimo"""
+    session = crear_sesion()
+    try:
+        resultados = session.query(
+            Libro.id,
+            Libro.isbn,
+            Libro.titulo,
+            Libro.stock_actual,
+            Libro.stock_minimo,
+            (Libro.stock_minimo - Libro.stock_actual).label('faltante')
+        ).filter(Libro.stock_actual < Libro.stock_minimo
+        ).order_by(desc('faltante')).all()
+        session.close()
+        
+        data = [("ID", "ISBN", "Título", "Stock Actual", "Stock Mínimo", "Faltante")]
+        for r in resultados:
+            data.append((
+                str(r.id),
+                r.isbn,
+                r.titulo,
+                str(r.stock_actual),
+                str(r.stock_minimo),
+                str(r.faltante)
+            ))
+        return data
+    finally:
+        session.close()
+
+def ordenes_pendientes():
+    """Órdenes de reposición pendientes y su detalle"""
+    session = crear_sesion()
+    try:
+        resultados = session.query(
+            OrdenReposicion.id,
+            OrdenReposicion.fecha_solicitud,
+            Proveedor.nombre_empresa,
+            OrdenReposicion.total_orden,
+            func.count(DetallesReposicion.id).label('items')
+        ).join(Proveedor, OrdenReposicion.id_proveedor == Proveedor.id
+        ).join(DetallesReposicion, OrdenReposicion.id == DetallesReposicion.id_orden
+        ).filter(OrdenReposicion.estado.in_(["Pendiente", "Enviada"])
+        ).group_by(OrdenReposicion.id, OrdenReposicion.fecha_solicitud, Proveedor.nombre_empresa, OrdenReposicion.total_orden
+        ).order_by(OrdenReposicion.fecha_solicitud).all()
+        session.close()
+        
+        data = [("ID Orden", "Fecha Solicitud", "Proveedor", "Total", "Items")]
+        for r in resultados:
+            data.append((
+                str(r.id),
+                r.fecha_solicitud.strftime("%d/%m/%Y"),
+                r.nombre_empresa,
+                f"${r.total_orden:.2f}",
+                str(r.items)
+            ))
+        return data
+    finally:
+        session.close()
+
+def resumen_compras_anual(año=None):
+    """Resumen de compras agrupado por mes y proveedor"""
+    if año is None:
+        año = date.today().year
+    
+    session = crear_sesion()
+    try:
+        resultados = session.query(
+            func.extract('month', OrdenReposicion.fecha_solicitud).label('mes'),
+            Proveedor.nombre_empresa,
+            func.sum(OrdenReposicion.total_orden).label('total_mes')
+        ).join(Proveedor, OrdenReposicion.id_proveedor == Proveedor.id
+        ).filter(
+            func.extract('year', OrdenReposicion.fecha_solicitud) == año
+        ).group_by(
+            func.extract('month', OrdenReposicion.fecha_solicitud),
+            Proveedor.nombre_empresa
+        ).order_by('mes', desc('total_mes')).all()
+        session.close()
+        
+        meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+        
+        data = [("Mes", "Proveedor", "Total Comprado")]
+        for r in resultados:
+            data.append((
+                meses[int(r.mes)-1],
+                r.nombre_empresa,
+                f"${r.total_mes:.2f}"
+            ))
+        return data
+    finally:
+        session.close()
