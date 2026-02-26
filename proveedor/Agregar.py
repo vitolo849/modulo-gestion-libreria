@@ -100,7 +100,6 @@ def view(content_area, ft):
         txt_email = ft.TextField(label="Email", width=350, hint_text="Opcional")
         
         def guardar_nuevo(e):
-            print("=== GUARDAR NUEVO PROVEEDOR ===")
             
             if not txt_nombre.value:
                 mostrar_mensaje("El nombre de la empresa es obligatorio")
@@ -117,11 +116,9 @@ def view(content_area, ft):
                 "email": txt_email.value or None
             }
             
-            print(f"Datos a guardar: {datos}")
             
             resultado = crear_proveedor(datos)
             
-            print(f"Resultado: {resultado}")
             
             if resultado["success"]:
                 modal.open = False
@@ -171,7 +168,6 @@ def view(content_area, ft):
     def abrir_modal_modificar(id_proveedor):
         nonlocal modo_edicion, proveedor_seleccionado
         modo_edicion = True
-        print(f"Abriendo modal para modificar proveedor #{id_proveedor}")
         
         datos = obtener_proveedor_por_id(id_proveedor)
         if not datos:
@@ -187,7 +183,6 @@ def view(content_area, ft):
         txt_email = ft.TextField(label="Email", value=datos["email"] or "", width=350)
         
         def guardar_cambios(e):
-            print(f"=== GUARDAR CAMBIOS PROVEEDOR #{id_proveedor} ===")
             
             if not txt_nombre.value:
                 mostrar_mensaje("El nombre de la empresa es obligatorio")
@@ -204,11 +199,9 @@ def view(content_area, ft):
                 "email": txt_email.value or None
             }
             
-            print(f"Datos a actualizar: {datos_actualizados}")
             
             resultado = actualizar_proveedor(id_proveedor, datos_actualizados)
             
-            print(f"Resultado: {resultado}")
             
             if resultado["success"]:
                 modal.open = False
@@ -256,7 +249,6 @@ def view(content_area, ft):
         content_area.page.update()
     
     def confirmar_eliminar(id_proveedor, nombre_proveedor):
-        print(f"Confirmando eliminación de proveedor #{id_proveedor}")
         
         def eliminar(e):
             resultado = eliminar_proveedor(id_proveedor)
@@ -298,7 +290,6 @@ def view(content_area, ft):
         content_area.page.update()
     
     def mostrar_mensaje(texto):
-        print(f"MENSAJE: {texto}")
         snack = ft.SnackBar(content=ft.Text(texto))
         content_area.page.overlay.append(snack)
         snack.open = True
@@ -337,7 +328,7 @@ def view(content_area, ft):
     
     # ===== CONTENIDO PRINCIPAL =====
     contenido_principal = ft.Column([
-        ft.Text("🏢 GESTIÓN DE PROVEEDORES", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("GESTIÓN DE PROVEEDORES", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
         
         ft.Container(
