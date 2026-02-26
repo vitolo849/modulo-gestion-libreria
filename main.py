@@ -15,6 +15,9 @@ from reportes.proveedores import view as proveedoresReportes
 from reportes.models import cargar_datos_prueba
 from compras.reposicion import view as reposicionCompras
 from compras.lista_reposicion import view as ordenesCompras
+
+from clientes.Gestion import view as gestionClientes
+
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
         content=ft.Column([
@@ -42,6 +45,8 @@ def main(page: ft.Page):
         bgcolor="#CBA68B",
         content=ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
     )
+
+    
     def cambiar_vista(e):
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
@@ -55,6 +60,8 @@ def main(page: ft.Page):
         elif e.control.data == "reportes":
             content_area.content = ft.Text("Sección de clientes", size=25)
         page.update()
+
+        
     def menu_item_click(e):
         accion = e.control.data
         content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
@@ -86,9 +93,13 @@ def main(page: ft.Page):
             reposicionCompras(content_area, ft)
         elif accion == "comprasOrdenes":
             ordenesCompras(content_area, ft)
+        elif accion == "gestionClientes":
+            gestionClientes(content_area, ft)
         elif accion == "TEST_TEMP":
             cargar_datos_prueba()
         page.update()
+
+
     def mostrar_dashboard():
         content_area.content = ft.Row(
             controls=[
@@ -210,7 +221,7 @@ def main(page: ft.Page):
                 ),
                 items=[
                     ft.PopupMenuItem(
-                        "Ver Clientes", data="ver_clientes", on_click=menu_item_click),
+                        "Gestión", data="gestionClientes", on_click=menu_item_click),
                 ],
             ),
             ft.PopupMenuButton(
