@@ -18,6 +18,8 @@ from compras.lista_reposicion import view as ordenesCompras
 
 from clientes.Gestion import view as gestionClientes
 
+from proveedor.Agregar import view as agregarProveedor
+
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
         content=ft.Column([
@@ -95,6 +97,8 @@ def main(page: ft.Page):
             ordenesCompras(content_area, ft)
         elif accion == "gestionClientes":
             gestionClientes(content_area, ft)
+        elif accion == "proveedorAgregar":
+            agregarProveedor(content_area, ft)
         elif accion == "TEST_TEMP":
             cargar_datos_prueba()
         page.update()
@@ -160,9 +164,7 @@ def main(page: ft.Page):
                     width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Reposición", data="comprasReposicion",
-                                     on_click=menu_item_click),
-                    ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
+                    ft.PopupMenuItem("Agregar", data="proveedorAgregar",
                                      on_click=menu_item_click),
                     ft.PopupMenuItem(
                         "Temporal", data="reporte_ventas", on_click=menu_item_click),
