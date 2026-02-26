@@ -142,46 +142,35 @@ def main(page: ft.Page):
             ft.Text("Modulo de administración y reportes",
                     size=15, color="#C7C8CA"),
             ft.Container(expand=True),
+
+
+            
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
                         controls=[
-                            ft.Icon(ft.Icons.CARD_MEMBERSHIP,
+                            ft.Icon(ft.Icons.FACTORY_OUTLINED,
                                     color=ft.Colors.WHITE, size=20),
-                            ft.Text("Membresías", size=16,
+                            ft.Text("Proveedores", size=16,
                                     weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         spacing=8,
                     ),
-                    width=130, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem(
-                        "Ver Membresías", data="ver_membresias", on_click=menu_item_click),
-                ]
-            ),
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.SHOPPING_CART,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Ventas", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
-                    ),
-                    width=110, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
-                ),
-                items=[
-                    ft.PopupMenuItem("Ver Ventas", data="ver_ventas",
+                    ft.PopupMenuItem("Reposición", data="comprasReposicion",
+                                     on_click=menu_item_click),
+                    ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
                                      on_click=menu_item_click),
                     ft.PopupMenuItem(
-                        "Reporte de Ventas", data="reporte_ventas", on_click=menu_item_click),
+                        "Temporal", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
+
+
+
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
@@ -205,6 +194,7 @@ def main(page: ft.Page):
                         "Temporal", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
+
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
