@@ -1,4 +1,3 @@
-# models_proveedores.py
 from datetime import date
 from libreria_cafe_edd_db import crear_sesion
 from libreria_cafe_edd_db import Proveedor, OrdenReposicion

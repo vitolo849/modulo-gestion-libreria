@@ -392,5 +392,4 @@ def view(content_area, ft):
     content_area.page.overlay.append(modal_confirm)
     content_area.update()
     
-    # Cargar proveedores iniciales
     cargar_proveedores()
