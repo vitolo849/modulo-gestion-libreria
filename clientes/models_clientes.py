@@ -109,24 +109,19 @@ def eliminar_cliente(id_cliente):
 
         session.query(RecomendacionLibro).filter(RecomendacionLibro.id_cliente == id_cliente).delete()
 
-        # 2. Obtener todas las facturas del cliente para luego eliminar sus ventas
         facturas = session.query(Factura).filter(Factura.id_cliente == id_cliente).all()
         facturas_ids = [f.id for f in facturas]
 
         if facturas_ids:
             session.query(Venta).filter(Venta.id_factura.in_(facturas_ids)).delete(synchronize_session=False)
 
-            # 4. Eliminar las facturas
             for factura in facturas:
                 session.delete(factura)
 
-        # 5. Eliminar consumos de libros
         session.query(ConsumoLibro).filter(ConsumoLibro.id_cliente == id_cliente).delete()
 
-        # 6. Eliminar consumos de café
         session.query(ConsumoCafe).filter(ConsumoCafe.id_cliente == id_cliente).delete()
 
-        # 7. Finalmente, eliminar el cliente
         session.delete(cliente)
         session.commit()
         return {"success": True, "message": "Cliente y todos sus registros asociados eliminados correctamente"}
