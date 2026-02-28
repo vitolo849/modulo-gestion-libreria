@@ -4,6 +4,9 @@ from sqlalchemy import func, desc, and_
 from libreria_cafe_edd_db.model.enum.tipo_venta import TipoVenta
 from libreria_cafe_edd_db.model.enum.metodo_pago import MetodoPago
 import random
+
+from datetime import date, timedelta, datetime, time
+
 def clientesMasCompras():
     session = crear_sesion()
     clientes_top = session.query(
@@ -283,7 +286,10 @@ def productos_mas_vendidos(limite=10, tipo=None):
         return data
     finally:
         session.close()
+        
+
 def cargar_datos_prueba(force=False):
+    print("Cargando datos de prueba con horas (datetime)...")
     session = crear_sesion()
     try:
         if not force and session.query(Cliente).count() > 0:
@@ -300,6 +306,8 @@ def cargar_datos_prueba(force=False):
             session.query(Cliente).delete()
             session.query(Membresia).delete()
             session.commit()
+        
+        # ===== MEMBRESÍAS =====
         membresia_basica = Membresia(
             fecha_inicio=date(2025, 1, 1),
             fecha_vencimiento=date(2025, 12, 31),
@@ -329,6 +337,8 @@ def cargar_datos_prueba(force=False):
         )
         session.add_all([membresia_basica, membresia_premium, membresia_vip])
         session.flush()
+        
+        # ===== CLIENTES =====
         datos_clientes = [
             {"nombre": "Juan Pérez", "cedula": 12345678, "telefono": "0412-1234567", "membresia": membresia_basica},
             {"nombre": "María González", "cedula": 23456789, "telefono": "0414-2345678", "membresia": membresia_premium},
@@ -341,18 +351,21 @@ def cargar_datos_prueba(force=False):
             {"nombre": "Miguel Ángel", "cedula": 90123456, "telefono": "0416-9012345", "membresia": None},
             {"nombre": "Sofía Torres", "cedula": 11223344, "telefono": "0424-1122334", "membresia": membresia_basica},
         ]
+        
         clientes = []
         for d in datos_clientes:
             cliente = Cliente(
                 id_membresia=d["membresia"].id if d["membresia"] else None,
                 nombre=d["nombre"],
                 cedula=d["cedula"],
-                fecha_ingreso=date.today() - timedelta(days=random.randint(30, 180)),
+                fecha_ingreso=date.today() - timedelta(days=random.randint(0, 30)),
                 telefono=d["telefono"]
             )
             session.add(cliente)
             clientes.append(cliente)
         session.flush()
+        
+        # ===== PRODUCTOS =====
         productos = [
             ("Cien años de soledad", "LIBRO", 35000),
             ("Don Quijote de la Mancha", "LIBRO", 42000),
@@ -390,24 +403,55 @@ def cargar_datos_prueba(force=False):
             ("Café Turco", "CAFE", 5500),
             ("Café Vietnamita", "CAFE", 6500),
         ]
+        
         metodos_pago = [MetodoPago.EFECTIVO, MetodoPago.PUNTO, MetodoPago.TRANSFERENCIA, MetodoPago.DIVISAS]
+        
+        # ===== FACTURAS CON DATETIME (FECHA + HORA) =====
         for i, cliente in enumerate(clientes):
             for j in range(random.randint(3, 8)):
-                fecha_factura = date.today() - timedelta(days=random.randint(0, 90))
+                # Crear datetime con fecha aleatoria
+                dias_atras = random.randint(0, 90)
+                fecha_base = datetime.now() - timedelta(days=dias_atras)
+                
+                # Generar hora aleatoria con distribución realista
+                rand = random.random()
+                if rand < 0.2:  # 20% mañana
+                    hora_aleatoria = random.randint(8, 11)
+                elif rand < 0.6:  # 40% tarde
+                    hora_aleatoria = random.randint(12, 15)
+                elif rand < 0.9:  # 30% noche
+                    hora_aleatoria = random.randint(16, 20)
+                else:  # 10% madrugada
+                    hora_aleatoria = random.randint(21, 23)
+                
+                minuto_aleatorio = random.randint(0, 59)
+                
+                # Combinar fecha y hora
+                fecha_hora = fecha_base.replace(
+                    hour=hora_aleatoria,
+                    minute=minuto_aleatorio,
+                    second=0,
+                    microsecond=0
+                )
+                
                 metodo_pago = random.choice(metodos_pago)
                 subtotal = 0
                 num_productos = random.randint(2, 6)
                 ventas_list = []
+                
                 for _ in range(num_productos):
                     producto = random.choice(productos)
                     cantidad = random.randint(1, 4)
                     subtotal += cantidad * producto[2]
                     ventas_list.append((producto[0], producto[1], producto[2], cantidad))
+                
                 iva = subtotal * 0.16
                 igtf = subtotal * 0.03 if metodo_pago == MetodoPago.DIVISAS else 0
                 total = subtotal + iva + igtf
+                
+                # Crear factura con datetime completo
                 factura = Factura(
-                    fecha=fecha_factura,
+                    fecha=fecha_hora,  # Ahora es datetime, incluye fecha y hora
                     metodo_pago=metodo_pago,
                     subtotal=subtotal,
                     monto_iva=iva,
@@ -417,6 +461,7 @@ def cargar_datos_prueba(force=False):
                 )
                 session.add(factura)
                 session.flush()
+                
                 for nombre, tipo, precio, cantidad in ventas_list:
                     venta = Venta(
                         cantidad=cantidad,
@@ -427,6 +472,8 @@ def cargar_datos_prueba(force=False):
                         id_factura=factura.id
                     )
                     session.add(venta)
+        
+        # ===== PROVEEDORES =====
         proveedores_data = [
             {"nombre_empresa": "Distribuidora Los Andes", "rif_nit": "J-12345678-9", "telefono": "0212-5551234", "email": "ventas@andes.com"},
             {"nombre_empresa": "Librería Universal", "rif_nit": "J-23456789-0", "telefono": "0212-5555678", "email": "pedidos@universal.com"},
@@ -436,12 +483,15 @@ def cargar_datos_prueba(force=False):
             {"nombre_empresa": "Café Import C.A.", "rif_nit": "J-67890123-4", "telefono": "0212-5554321", "email": "ventas@cafeimport.com"},
             {"nombre_empresa": "Granos Selectos", "rif_nit": "J-78901234-5", "telefono": "0212-5558765", "email": "pedidos@granosselectos.com"},
         ]
+        
         proveedores = []
         for p_data in proveedores_data:
             proveedor = Proveedor(**p_data)
             session.add(proveedor)
             proveedores.append(proveedor)
         session.flush()
+        
+        # ===== LIBROS =====
         libros_data = [
             {"isbn": "978-84-376-0494-7", "titulo": "Cien años de soledad", "stock_actual": 15, "stock_minimo": 8, "precio": 35000},
             {"isbn": "978-84-206-5132-3", "titulo": "Don Quijote de la Mancha", "stock_actual": 12, "stock_minimo": 5, "precio": 42000},
@@ -461,12 +511,15 @@ def cargar_datos_prueba(force=False):
             {"isbn": "978-84-376-0506-6", "titulo": "El amor en los tiempos del cólera", "stock_actual": 13, "stock_minimo": 6, "precio": 36000},
             {"isbn": "978-84-376-0507-3", "titulo": "La casa de los espíritus", "stock_actual": 9, "stock_minimo": 5, "precio": 34000},
         ]
+        
         libros = []
         for l_data in libros_data:
             libro = Libro(**l_data)
             session.add(libro)
             libros.append(libro)
         session.flush()
+        
+        # ===== ÓRDENES DE REPOSICIÓN =====
         estados = ["Pendiente", "Enviada", "Recibida", "Cancelada"]
         fechas_orden = [
             date.today() - timedelta(days=85),
@@ -480,6 +533,7 @@ def cargar_datos_prueba(force=False):
             date.today() - timedelta(days=2),
             date.today(),
         ]
+        
         ordenes_data = [
             [0, 0, 2, [(0, 15), (1, 10), (2, 8)]],
             [0, 3, 2, [(3, 12), (4, 8), (5, 6)]],
@@ -503,6 +557,7 @@ def cargar_datos_prueba(force=False):
             [6, 6, 2, [(0, 0), (0, 0)]],
             [6, 9, 0, [(0, 0), (0, 0)]],
         ]
+        
         for o_data in ordenes_data:
             proveedor_idx, fecha_idx, estado_idx, detalles = o_data
             fecha_solicitud = fechas_orden[fecha_idx]
@@ -538,7 +593,19 @@ def cargar_datos_prueba(force=False):
                         session.add(detalle)
                         if estado_idx == 2:
                             libros[libro_idx].stock_actual += cantidad
+        
         session.commit()
+        
+        # Mostrar distribución de ventas por hora
+        print("\n📊 DISTRIBUCIÓN DE VENTAS POR HORA:")
+        resultados = session.query(
+            func.strftime('%H', Factura.fecha).label('hora'),
+            func.count(Factura.id).label('total')
+        ).group_by('hora').order_by('hora').all()
+        
+        for r in resultados:
+            print(f"  Hora {int(r.hora):02d}:00 - {int(r.hora)+1:02d}:00: {r.total} ventas")
+        
         print("\n" + "="*60)
         print("DATOS DE PRUEBA CARGADOS EXITOSAMENTE")
         print("="*60)
@@ -551,12 +618,16 @@ def cargar_datos_prueba(force=False):
         print(f"Órdenes de reposición: {session.query(OrdenReposicion).count()}")
         print(f"Detalles de reposición: {session.query(DetallesReposicion).count()}")
         print("="*60)
+        
     except Exception as e:
         session.rollback()
         print(f"Error al cargar datos: {e}")
         raise e
     finally:
         session.close()
+
+
+
 def compras_por_proveedor(fecha_inicio=None, fecha_fin=None):
     """Compras agrupadas por proveedor en un período"""
     session = crear_sesion()
