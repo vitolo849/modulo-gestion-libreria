@@ -20,6 +20,9 @@ from clientes.Gestion import view as gestionClientes
 
 from proveedor.Agregar import view as agregarProveedor
 
+
+from analysis.models import analizar_tendencia_ventas,analizar_ventas_por_hora
+
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
         content=ft.Column([
@@ -36,6 +39,7 @@ def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
         on_hover=lambda e: (setattr(
             e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
     )
+    
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
@@ -105,19 +109,68 @@ def main(page: ft.Page):
 
 
     def mostrar_dashboard():
+        from datetime import date, timedelta
+        from clientes.models_clientes import obtener_clientes
+        from compras.models import libros_bajo_stock, obtener_ordenes_recientes
+        
+        datos_horas = analizar_ventas_por_hora("mes")
+        
+        fecha_limite = date.today() - timedelta(days=30)
+        todos_clientes = obtener_clientes()
+        nuevos_clientes = 0
+        
+        for c in todos_clientes:
+            try:
+                dia, mes, anio = map(int, c["fecha_ingreso"].split('/'))
+                fecha_ingreso = date(anio, mes, dia)
+                if fecha_ingreso >= fecha_limite:
+                    nuevos_clientes += 1
+            except:
+                pass
+
+        libros_bajo = libros_bajo_stock()
+        total_bajo_stock = len(libros_bajo)
+        
+        ordenes = obtener_ordenes_recientes()
+        ordenes_pendientes = sum(1 for o in ordenes if o["estado"] in ["Pendiente", "Enviada"])
+        
+        # Formatear la hora para mostrarla más amigable
+        hora_mejor = datos_horas['mejor_hora']
+        hora_texto = f"{hora_mejor:02d}:00 - {hora_mejor+1:02d}:00"
+        
         content_area.content = ft.Row(
             controls=[
                 crear_boton_acceso(
-                    "Ventas de Hoy", ft.Icons.SHOPPING_CART, "ver_ventas", menu_item_click),
+                    f"Hora Pico\n{hora_texto}\n{datos_horas['total_ventas_mejor_hora']} ventas\n${datos_horas['total_ingresos_mejor_hora']:,.0f}", 
+                    ft.Icons.PUNCH_CLOCK, 
+                    "ver_ventas", 
+                    menu_item_click
+                ),
                 crear_boton_acceso(
-                    "Ver Clientes", ft.Icons.PERSON_ADD, "clientes", menu_item_click),
+                    f"Clientes\n{nuevos_clientes} nuevos\nÚltimos 30 días", 
+                    ft.Icons.PERSON_ADD, 
+                    "clientes", 
+                    menu_item_click
+                ),
                 crear_boton_acceso(
-                    "Stock / Inventario", ft.Icons.INVENTORY, "ver_productos", menu_item_click),
+                    f"Stock Bajo\n{total_bajo_stock} productos\nRequieren reposición", 
+                    ft.Icons.INVENTORY, 
+                    "ver_productos", 
+                    menu_item_click
+                ),
+                crear_boton_acceso(
+                    f"Órdenes\n{ordenes_pendientes} pendientes\nReposición", 
+                    ft.Icons.SHOPPING_CART, 
+                    "ordenes", 
+                    menu_item_click
+                ),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
-            spacing=30
+            spacing=30,
+            wrap=True  
         )
         page.update()
+    
     def ir_al_inicio(e):
         content_area.alignment = ft.Alignment(0, 0)
         mostrar_dashboard()
@@ -164,10 +217,8 @@ def main(page: ft.Page):
                     width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
                 items=[
-                    ft.PopupMenuItem("Agregar", data="proveedorAgregar",
+                    ft.PopupMenuItem("Gestión", data="proveedorAgregar",
                                      on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Temporal", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
 
@@ -192,8 +243,6 @@ def main(page: ft.Page):
                                      on_click=menu_item_click),
                     ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
                                      on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Temporal", data="reporte_ventas", on_click=menu_item_click),
                 ],
             ),
 
@@ -239,8 +288,6 @@ def main(page: ft.Page):
                         "Compras", data="reportesCompras", on_click=menu_item_click),
                     ft.PopupMenuItem(
                         "Proveedores", data="reportesProveedores", on_click=menu_item_click),
-                    ft.PopupMenuItem("TEST_TEMP", data="TEST_TEMP",
-                                     on_click=menu_item_click),
                 ],
             )
         ],
@@ -259,6 +306,7 @@ def main(page: ft.Page):
         )
     )
     mostrar_dashboard()
+
 if __name__ == "__main__":
     establecer_logs(True)
     session = crear_sesion()
