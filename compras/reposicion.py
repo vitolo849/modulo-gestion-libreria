@@ -398,4 +398,3 @@ def view(content_area, ft):
     productos_alertas = productos_bajo_stock()
     actualizar_alertas_stock(productos_alertas)
     
-    print("=== REPOSICIÓN INICIADA ===")

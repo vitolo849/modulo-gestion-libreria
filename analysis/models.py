@@ -4,32 +4,15 @@ from libreria_cafe_edd_db import crear_sesion, Factura
 from sqlalchemy import func, extract, and_
 
 def analizar_ventas_por_hora(periodo="mes"):
-    """
-    Analiza las ventas agrupadas por hora del día
     
-    Args:
-        periodo: "mes" para último mes, "año" para último año, o "todo" para todo el historial
-    
-    Returns:
-        dict: {
-            "mejor_hora": int (0-23),
-            "mejor_hora_texto": str (ej. "15:00 - 16:00"),
-            "total_ventas_mejor_hora": int,
-            "total_ingresos_mejor_hora": float,
-            "ventas_por_hora": list de dicts con hora, total_ventas, total_ingresos,
-            "promedio_por_hora": float,
-            "total_general": dict con total_ventas y total_ingresos
-        }
-    """
     session = crear_sesion()
     try:
-        # Determinar fecha de inicio según el período
         hoy = date.today()
         if periodo == "mes":
             fecha_inicio = hoy - timedelta(days=30)
         elif periodo == "año":
             fecha_inicio = hoy - timedelta(days=365)
-        else:  # "todo"
+        else: 
             fecha_inicio = date(2000, 1, 1)
             
         if session.bind.dialect.name == 'sqlite':
@@ -94,11 +77,7 @@ def analizar_ventas_por_hora(periodo="mes"):
         session.close()
 
 def analizar_ventas_por_dia_semana(periodo="mes"):
-    """
-    Analiza las ventas agrupadas por día de la semana
     
-    Returns: similar a la función anterior pero por día de semana (0=lunes, 6=domingo)
-    """
     session = crear_sesion()
     try:
         hoy = date.today()
@@ -109,7 +88,7 @@ def analizar_ventas_por_dia_semana(periodo="mes"):
         else:
             fecha_inicio = date(2000, 1, 1)
         
-        # Para SQLite usamos strftime('%w', fecha) que da 0=domingo, 6=sábado
+        
         if session.bind.dialect.name == 'sqlite':
             resultados = session.query(
                 func.strftime('%w', Factura.fecha).label('dia_semana'),
@@ -128,16 +107,16 @@ def analizar_ventas_por_dia_semana(periodo="mes"):
             ).order_by('dia_semana').all()
         
         dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"]
-        # Ajuste: SQLite da 0=domingo, queremos 0=lunes
+        
         ventas_por_dia = []
         mejor_dia = None
         max_ventas = 0
         
         for r in resultados:
             dia_idx = int(r.dia_semana)
-            # Convertir de domingo=0 a lunes=0
+            
             if session.bind.dialect.name == 'sqlite':
-                dia_idx = (dia_idx + 6) % 7  # Convierte domingo(0) a 6, lunes(1) a 0, etc.
+                dia_idx = (dia_idx + 6) % 7
             
             ventas = r.total_ventas or 0
             ingresos = float(r.total_ingresos or 0)
@@ -164,11 +143,6 @@ def analizar_ventas_por_dia_semana(periodo="mes"):
         session.close()
 
 def analizar_tendencia_ventas(dias=30):
-    """
-    Analiza la tendencia de ventas día por día
-    
-    Returns: lista de ventas por día para los últimos N días
-    """
     session = crear_sesion()
     try:
         fecha_inicio = date.today() - timedelta(days=dias)

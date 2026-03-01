@@ -6,7 +6,6 @@ from libreria_cafe_edd_db import Membresia,Factura,RecomendacionLibro,Venta,Cons
 from sqlalchemy import func, or_
 
 def obtener_clientes(busqueda=""):
-    """Obtiene lista de clientes con opción de búsqueda"""
     session = crear_sesion()
     try:
         query = session.query(
@@ -133,7 +132,6 @@ def eliminar_cliente(id_cliente):
         session.close()
 
 def obtener_membresias():
-    """Obtiene lista de membresías para el combo box"""
     session = crear_sesion()
     try:
         membresias = session.query(Membresia).all()

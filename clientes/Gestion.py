@@ -16,7 +16,6 @@ def view(content_area, ft):
         print(f"Cargando clientes... Búsqueda: '{busqueda}'")
         clientes = obtener_clientes(busqueda)
         
-        # Limpiar tabla
         tabla_clientes.rows.clear()
         
         if clientes:
@@ -283,8 +282,8 @@ def view(content_area, ft):
         on_submit=buscar_clientes
     )
     
-    btn_buscar = ft.ElevatedButton("🔍 Buscar", on_click=buscar_clientes)
-    btn_limpiar = ft.ElevatedButton("🗑️ Limpiar", on_click=limpiar_busqueda)
+    btn_buscar = ft.ElevatedButton("Buscar", on_click=buscar_clientes)
+    btn_limpiar = ft.ElevatedButton("Limpiar", on_click=limpiar_busqueda)
     
     lbl_resultados = ft.Text("Mostrando 0 clientes", size=14, color=ft.Colors.GREY)
     
@@ -306,7 +305,6 @@ def view(content_area, ft):
     modal = ft.AlertDialog(modal=True, content=ft.Container())
     modal_confirm = ft.AlertDialog(modal=True, content=ft.Container())
     
-    # ===== CONTENIDO PRINCIPAL =====
     contenido_principal = ft.Column([
         ft.Text("GESTIÓN DE CLIENTES", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
