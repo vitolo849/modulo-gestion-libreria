@@ -88,10 +88,11 @@ def main(page: ft.Page):
         page.update()
 
 
+
     def mostrar_dashboard():
         from datetime import date, timedelta
         from clientes.models_clientes import obtener_clientes
-        from compras.models import libros_bajo_stock, obtener_ordenes_recientes
+        from compras.models import productos_bajo_stock, obtener_ordenes_recientes  # Cambiado
         
         datos_horas = analizar_ventas_por_hora("mes")
         
@@ -108,13 +109,14 @@ def main(page: ft.Page):
             except:
                 pass
 
-        libros_bajo = libros_bajo_stock()
-        total_bajo_stock = len(libros_bajo)
+        # Cambiado: usar productos_bajo_stock
+        productos_bajo = productos_bajo_stock()
+        total_bajo_stock = len(productos_bajo)
         
         ordenes = obtener_ordenes_recientes()
         ordenes_pendientes = sum(1 for o in ordenes if o["estado"] in ["Pendiente", "Enviada"])
         
-        # Formatear la hora para mostrarla más amigable
+        # Formatear la hora
         hora_mejor = datos_horas['mejor_hora']
         hora_texto = f"{hora_mejor:02d}:00 - {hora_mejor+1:02d}:00"
         
@@ -150,6 +152,7 @@ def main(page: ft.Page):
             wrap=True  
         )
         page.update()
+
     
     def ir_al_inicio(e):
         content_area.alignment = ft.Alignment(0, 0)
