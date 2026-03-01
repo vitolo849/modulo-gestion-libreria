@@ -2,13 +2,7 @@ from fpdf import FPDF
 import os
 import subprocess
 import sys
-TABLE_DATAejemplo = (
-    ("First name", "Last name", "Age", "City"),
-    ("Jules", "Smith", "34", "San Juan"),
-    ("Mary", "Ramos", "45", "Orlando"),
-    ("Carlson", "Banks", "19", "Los Angeles"),
-    ("Lucas", "Cimon", "31", "Angers"),
-)
+
 def getPdfTable(TABLE_DATA):
     pdf = FPDF()
     pdf.add_page()
