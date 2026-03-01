@@ -1,3 +1,4 @@
+# libreria_cafe_edd_db/model/orden_reposicion.py
 from typing import Optional, List
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -8,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .proveedor import Proveedor
     from .detalles_reposicion import DetallesReposicion
+    from .detalles_reposicion_cafe import DetallesReposicionCafe  # <-- AGREGAR
 
 class OrdenReposicion(Base):
     __tablename__ = 'orden_reposicion'
@@ -22,3 +24,6 @@ class OrdenReposicion(Base):
     
     proveedor: Mapped["Proveedor"] = relationship(back_populates="ordenes")
     detalles: Mapped[List["DetallesReposicion"]] = relationship(back_populates="orden")
+    
+    # <-- AGREGAR ESTA LÍNEA
+    detalles_cafe: Mapped[List["DetallesReposicionCafe"]] = relationship(back_populates="orden")

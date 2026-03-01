@@ -1,3 +1,4 @@
+# libreria_cafe_edd_db/model/detalles_reposicion.py
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
@@ -16,5 +17,6 @@ class DetallesReposicion(Base):
     cantidad: Mapped[int] = mapped_column()
     precio: Mapped[float] = mapped_column()
     
+    # Relaciones - usar el nombre de la clase, no el nombre del módulo
     orden: Mapped["OrdenReposicion"] = relationship(back_populates="detalles")
     libro: Mapped["Libro"] = relationship(back_populates="detalles_reposicion")

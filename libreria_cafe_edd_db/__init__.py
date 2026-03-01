@@ -13,6 +13,9 @@ from .model.recomendacion_libro import RecomendacionLibro
 from .model.venta import Venta
 from .sesion import crear_sesion, establecer_logs
 
+from .model.cafe import Cafe
+from .model.detalles_reposicion_cafe import DetallesReposicionCafe
+
 __all__ = [
     "MetodoPago",
     "TipoVenta",
@@ -28,5 +31,7 @@ __all__ = [
     "RecomendacionLibro",
     "Venta",
     "crear_sesion",
-    "establecer_logs"
+    "establecer_logs",
+    "Cafe",
+    "DetallesReposicionCafe"
 ]
