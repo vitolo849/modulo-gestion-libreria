@@ -308,7 +308,7 @@ def view(content_area, ft):
     
     # ===== CONTENIDO PRINCIPAL =====
     contenido_principal = ft.Column([
-        ft.Text("👥 GESTIÓN DE CLIENTES", size=30, weight=ft.FontWeight.BOLD),
+        ft.Text("GESTIÓN DE CLIENTES", size=30, weight=ft.FontWeight.BOLD),
         ft.Divider(height=20),
         
         ft.Container(

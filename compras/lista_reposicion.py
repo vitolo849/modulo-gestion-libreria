@@ -116,15 +116,15 @@ def view(content_area, ft):
                     ft.Divider(height=10),
                     ft.Row([
                         ft.Column([
-                            ft.Text("📅 Fechas:", weight=ft.FontWeight.BOLD),
+                            ft.Text(" Fechas:", weight=ft.FontWeight.BOLD),
                             ft.Text(f"  Solicitud: {datos['orden']['fecha_solicitud']}"),
                             ft.Text(f"  Entrega: {datos['orden']['fecha_entrega']}"),
                         ], spacing=5),
                         ft.Column([
-                            ft.Text("🏢 Proveedor:", weight=ft.FontWeight.BOLD),
+                            ft.Text(" Proveedor:", weight=ft.FontWeight.BOLD),
                             ft.Text(f"  {datos['proveedor']['nombre']}"),
                             ft.Text(f"  RIF: {datos['proveedor']['rif']}"),
-                            ft.Text(f"  📞 {datos['proveedor']['telefono'] or 'N/A'}"),
+                            ft.Text(f"   {datos['proveedor']['telefono'] or 'N/A'}"),
                         ], spacing=5)
                     ]),
                 ]),
@@ -275,10 +275,10 @@ def view(content_area, ft):
         height=500
     )
     contenido_principal = ft.Column([
-        ft.Text("📋 LISTA DE ÓRDENES DE REPOSICIÓN", size=28, weight=ft.FontWeight.BOLD),
+        ft.Text("LISTA DE ÓRDENES DE REPOSICIÓN", size=28, weight=ft.FontWeight.BOLD),
         ft.Divider(height=15),
         ft.Row([
-            ft.ElevatedButton("🔄 Recargar", on_click=recargar_todo),
+            ft.ElevatedButton("Recargar", on_click=recargar_todo),
         ], alignment=ft.MainAxisAlignment.CENTER),
         ft.Container(height=10),
         ft.Row([
