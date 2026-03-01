@@ -30,12 +30,9 @@ def analizar_ventas_por_hora(periodo="mes"):
         elif periodo == "año":
             fecha_inicio = hoy - timedelta(days=365)
         else:  # "todo"
-            fecha_inicio = date(2000, 1, 1)  # Una fecha muy antigua
-        
-        # Consulta para obtener ventas agrupadas por hora
-        # Nota: SQLite no tiene extract('hour', fecha) directamente, necesitamos usar strftime
+            fecha_inicio = date(2000, 1, 1)
+            
         if session.bind.dialect.name == 'sqlite':
-            # Para SQLite
             resultados = session.query(
                 func.strftime('%H', Factura.fecha).label('hora'),
                 func.count(Factura.id).label('total_ventas'),
@@ -43,17 +40,7 @@ def analizar_ventas_por_hora(periodo="mes"):
             ).filter(Factura.fecha >= fecha_inicio
             ).group_by('hora'
             ).order_by('hora').all()
-        else:
-            # Para PostgreSQL/MySQL
-            resultados = session.query(
-                extract('hour', Factura.fecha).label('hora'),
-                func.count(Factura.id).label('total_ventas'),
-                func.sum(Factura.monto_total).label('total_ingresos')
-            ).filter(Factura.fecha >= fecha_inicio
-            ).group_by('hora'
-            ).order_by('hora').all()
         
-        # Procesar resultados
         ventas_por_hora = []
         mejor_hora = None
         max_ventas = 0
