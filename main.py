@@ -1,7 +1,6 @@
 import flet as ft
 from datetime import date, timedelta
 from libreria_cafe_edd_db import crear_sesion, establecer_logs, Membresia
-from clientes.agg_cliente import view as agregarCliente
 from ventas.ver_ventas import view as verVentas
 from reportes.clientes import view as clientesReportes
 from reportes.compras import view as comprasReportes
@@ -66,11 +65,7 @@ def main(page: ft.Page):
     def menu_item_click(e):
         accion = e.control.data
         content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
-        if accion == "clientes" or accion == "ver_clientes":
-            content_area.content.controls.append(
-                ft.Text("Sección de Clientes", size=25))
-            agregarCliente(content_area, ft)
-        elif accion == "ver_ventas" :
+        if accion == "ver_ventas" :
             verVentas(content_area, ft)
         elif accion == "reportesClientes" or accion == "reporte_clientes":
             clientesReportes(content_area, ft)
