@@ -157,7 +157,7 @@ def view(content_area, ft):
             contenido_detalle.controls.append(
                 ft.Container(
                     content=ft.Column([
-                        ft.Text("📦 Productos:", size=14, weight=ft.FontWeight.BOLD),
+                        ft.Text("Productos:", size=14, weight=ft.FontWeight.BOLD),
                         ft.Column(productos_list, spacing=5),
                         ft.Divider(),
                         ft.Row([
@@ -180,14 +180,14 @@ def view(content_area, ft):
             acciones = ft.Container(
                 content=ft.Row([
                     ft.ElevatedButton(
-                        "📤 Enviada" if datos['orden']['estado'] == "Pendiente" else "📥 Recibida",
+                        "Enviada" if datos['orden']['estado'] == "Pendiente" else "📥 Recibida",
                         on_click=lambda _, oid=id_orden: cambiar_estado(oid),
                         bgcolor=ft.Colors.GREEN,
                         color=ft.Colors.WHITE,
                         width=140
                     ),
                     ft.ElevatedButton(
-                        "❌ Cancelar",
+                        "Cancelar",
                         on_click=lambda _, oid=id_orden: cancelar_orden(oid),
                         bgcolor=ft.Colors.RED,
                         color=ft.Colors.WHITE,
@@ -285,7 +285,7 @@ def view(content_area, ft):
             ft.Container(
                 content=ft.Column([
                     ft.Container(
-                        content=ft.Text("⏳ Órdenes Pendientes/Enviadas", size=16, weight=ft.FontWeight.BOLD),
+                        content=ft.Text("Órdenes Pendientes/Enviadas", size=16, weight=ft.FontWeight.BOLD),
                         bgcolor=ft.Colors.BLUE_50,
                         padding=10,
                         border_radius=5
@@ -297,7 +297,7 @@ def view(content_area, ft):
                     ),
                     ft.Container(height=10),
                     ft.Container(
-                        content=ft.Text("✅ Órdenes Completadas", size=16, weight=ft.FontWeight.BOLD),
+                        content=ft.Text("Órdenes Completadas", size=16, weight=ft.FontWeight.BOLD),
                         bgcolor=ft.Colors.GREEN_50,
                         padding=10,
                         border_radius=5
