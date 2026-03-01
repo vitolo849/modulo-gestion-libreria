@@ -5,8 +5,6 @@ from productos.agregar import view as agregarProductos
 from productos.inventario import view as inventariosProductos
 from productos.eliminar import view as eliminarProducto
 from clientes.agg_cliente import view as agregarCliente
-from membresia.ver_membresia import view as verMemebresia
-from membresia.activas_membresia import view as agregarMembresia
 from ventas.ver_ventas import view as verVentas
 from reportes.clientes import view as clientesReportes
 from reportes.compras import view as comprasReportes
@@ -79,8 +77,6 @@ def main(page: ft.Page):
         elif accion == "ver_productos":
             content_area.alignment = ft.Alignment(0, 0)
             inventariosProductos(content_area, ft)
-        elif accion == "ver_membresias":
-            verMemebresia(content_area, ft)
         elif accion == "clientes" or accion == "ver_clientes":
             content_area.content.controls.append(
                 ft.Text("Sección de Clientes", size=25))
