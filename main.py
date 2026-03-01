@@ -15,7 +15,8 @@ from clientes.Gestion import view as gestionClientes
 from proveedor.Agregar import view as agregarProveedor
 
 
-from analysis.models import analizar_tendencia_ventas,analizar_ventas_por_hora
+from analysis.models import analizar_tendencia_ventas, analizar_ventas_por_hora
+
 
 def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
     return ft.Container(
@@ -33,7 +34,8 @@ def crear_boton_acceso(titulo, icono, data_accion, menu_click_func):
         on_hover=lambda e: (setattr(
             e.control, "scale", 1.05 if e.data == "true" else 1.0), e.control.update()),
     )
-    
+
+
 def main(page: ft.Page):
     page.title = "Administración Usuario"
     page.padding = 0
@@ -46,7 +48,6 @@ def main(page: ft.Page):
         content=ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
     )
 
-    
     def cambiar_vista(e):
         if e.control.data == "productos":
             content_area.content = ft.Text("Sección de Productos ", size=25)
@@ -61,11 +62,10 @@ def main(page: ft.Page):
             content_area.content = ft.Text("Sección de clientes", size=25)
         page.update()
 
-        
     def menu_item_click(e):
         accion = e.control.data
         content_area.content = ft.Column(scroll=ft.ScrollMode.ADAPTIVE)
-        if accion == "ver_ventas" :
+        if accion == "ver_ventas":
             verVentas(content_area, ft)
         elif accion == "reportesClientes" or accion == "reporte_clientes":
             clientesReportes(content_area, ft)
@@ -87,19 +87,17 @@ def main(page: ft.Page):
             cargar_datos_prueba()
         page.update()
 
-
-
     def mostrar_dashboard():
         from datetime import date, timedelta
         from clientes.models_clientes import obtener_clientes
         from compras.models import productos_bajo_stock, obtener_ordenes_recientes  # Cambiado
-        
+
         datos_horas = analizar_ventas_por_hora("mes")
-        
+
         fecha_limite = date.today() - timedelta(days=30)
         todos_clientes = obtener_clientes()
         nuevos_clientes = 0
-        
+
         for c in todos_clientes:
             try:
                 dia, mes, anio = map(int, c["fecha_ingreso"].split('/'))
@@ -112,53 +110,54 @@ def main(page: ft.Page):
         # Cambiado: usar productos_bajo_stock
         productos_bajo = productos_bajo_stock()
         total_bajo_stock = len(productos_bajo)
-        
+
         ordenes = obtener_ordenes_recientes()
-        ordenes_pendientes = sum(1 for o in ordenes if o["estado"] in ["Pendiente", "Enviada"])
-        
+        ordenes_pendientes = sum(1 for o in ordenes if o["estado"] in [
+                                 "Pendiente", "Enviada"])
+
         # Formatear la hora
         hora_mejor = datos_horas['mejor_hora']
         hora_texto = f"{hora_mejor:02d}:00 - {hora_mejor+1:02d}:00"
-        
+
         content_area.content = ft.Row(
             controls=[
                 crear_boton_acceso(
-                    f"Hora Pico\n{hora_texto}\n{datos_horas['total_ventas_mejor_hora']} ventas\n${datos_horas['total_ingresos_mejor_hora']:,.0f}", 
-                    ft.Icons.PUNCH_CLOCK, 
-                    "ver_ventas", 
+                    f"Hora Pico\n{hora_texto}\n{datos_horas['total_ventas_mejor_hora']} ventas\n${datos_horas['total_ingresos_mejor_hora']:,.0f}",
+                    ft.Icons.PUNCH_CLOCK,
+                    "ver_ventas",
                     menu_item_click
                 ),
                 crear_boton_acceso(
-                    f"Clientes\n{nuevos_clientes} nuevos\nÚltimos 30 días", 
-                    ft.Icons.PERSON_ADD, 
-                    "clientes", 
+                    f"Clientes\n{nuevos_clientes} nuevos\nÚltimos 30 días",
+                    ft.Icons.PERSON_ADD,
+                    "clientes",
                     menu_item_click
                 ),
                 crear_boton_acceso(
-                    f"Stock Bajo\n{total_bajo_stock} productos\nRequieren reposición", 
-                    ft.Icons.INVENTORY, 
-                    "ver_productos", 
+                    f"Stock Bajo\n{total_bajo_stock} productos\nRequieren reposición",
+                    ft.Icons.INVENTORY,
+                    "ver_productos",
                     menu_item_click
                 ),
                 crear_boton_acceso(
-                    f"Órdenes\n{ordenes_pendientes} pendientes\nReposición", 
-                    ft.Icons.SHOPPING_CART, 
-                    "ordenes", 
+                    f"Órdenes\n{ordenes_pendientes} pendientes\nReposición",
+                    ft.Icons.SHOPPING_CART,
+                    "ordenes",
                     menu_item_click
                 ),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
             spacing=30,
-            wrap=True  
+            wrap=True
         )
         page.update()
 
-    
     def ir_al_inicio(e):
+
         content_area.alignment = ft.Alignment(0, 0)
         mostrar_dashboard()
         page.update()
-    nav_bar = ft.Row(
+        nav_bar = ft.Row(
         controls=[
             ft.IconButton(
                 icon=ft.Icons.HOME_ROUNDED,
@@ -184,7 +183,7 @@ def main(page: ft.Page):
             ft.Container(expand=True),
 
 
-            
+
             ft.PopupMenuButton(
                 content=ft.Container(
                     content=ft.Row(
@@ -289,6 +288,7 @@ def main(page: ft.Page):
         )
     )
     mostrar_dashboard()
+
 
 if __name__ == "__main__":
     establecer_logs(True)
