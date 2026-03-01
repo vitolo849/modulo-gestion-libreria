@@ -3,13 +3,12 @@ import logging
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# IMPORTANTE: Importar TODOS los modelos ANTES de crear las tablas
 from .model.base import Base
 from .model.cliente import Cliente
 from .model.membresia import Membresia
 from .model.proveedor import Proveedor
 from .model.libro import Libro
-from .model.cafe import Cafe  # <-- NUEVO
+from .model.cafe import Cafe 
 from .model.factura import Factura
 from .model.venta import Venta
 from .model.orden_reposicion import OrdenReposicion
