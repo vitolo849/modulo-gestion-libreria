@@ -158,124 +158,124 @@ def main(page: ft.Page):
         mostrar_dashboard()
         page.update()
         nav_bar = ft.Row(
-        controls=[
-            ft.IconButton(
-                icon=ft.Icons.HOME_ROUNDED,
-                icon_color=ft.Colors.WHITE,
-                icon_size=30,
-                tooltip="Ir al Inicio",
-                on_click=ir_al_inicio
-            ),
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
-                    ),
-                    width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+            controls=[
+                ft.IconButton(
+                    icon=ft.Icons.HOME_ROUNDED,
+                    icon_color=ft.Colors.WHITE,
+                    icon_size=30,
+                    tooltip="Ir al Inicio",
+                    on_click=ir_al_inicio
                 ),
-            ),
-            ft.VerticalDivider(width=20, color=ft.Colors.TRANSPARENT),
-            ft.Text("Modulo de administración y reportes",
-                    size=15, color="#C7C8CA"),
-            ft.Container(expand=True),
-
-
-
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.FACTORY_OUTLINED,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Proveedores", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
+                ft.PopupMenuButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=8,
+                        ),
+                        width=150, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                     ),
-                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                 ),
-                items=[
-                    ft.PopupMenuItem("Gestión", data="proveedorAgregar",
-                                     on_click=menu_item_click),
-                ],
-            ),
+                ft.VerticalDivider(width=20, color=ft.Colors.TRANSPARENT),
+                ft.Text("Modulo de administración y reportes",
+                        size=15, color="#C7C8CA"),
+                ft.Container(expand=True),
 
 
 
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.SELL_OUTLINED,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Compras", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
+                ft.PopupMenuButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Icon(ft.Icons.FACTORY_OUTLINED,
+                                        color=ft.Colors.WHITE, size=20),
+                                ft.Text("Proveedores", size=16,
+                                        weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=8,
+                        ),
+                        width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                     ),
-                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    items=[
+                        ft.PopupMenuItem("Gestión", data="proveedorAgregar",
+                                         on_click=menu_item_click),
+                    ],
                 ),
-                items=[
-                    ft.PopupMenuItem("Reposición", data="comprasReposicion",
-                                     on_click=menu_item_click),
-                    ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
-                                     on_click=menu_item_click),
-                ],
-            ),
 
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.PERSON,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Clientes", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
+
+
+                ft.PopupMenuButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Icon(ft.Icons.SELL_OUTLINED,
+                                        color=ft.Colors.WHITE, size=20),
+                                ft.Text("Compras", size=16,
+                                        weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=8,
+                        ),
+                        width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                     ),
-                    width=110, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    items=[
+                        ft.PopupMenuItem("Reposición", data="comprasReposicion",
+                                         on_click=menu_item_click),
+                        ft.PopupMenuItem("Ordenes", data="comprasOrdenes",
+                                         on_click=menu_item_click),
+                    ],
                 ),
-                items=[
-                    ft.PopupMenuItem(
-                        "Gestión", data="gestionClientes", on_click=menu_item_click),
-                ],
-            ),
-            ft.PopupMenuButton(
-                content=ft.Container(
-                    content=ft.Row(
-                        controls=[
-                            ft.Icon(ft.Icons.BAR_CHART,
-                                    color=ft.Colors.WHITE, size=20),
-                            ft.Text("Reportes", size=16,
-                                    weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
-                        ],
-                        alignment=ft.MainAxisAlignment.CENTER,
-                        spacing=8,
+
+                ft.PopupMenuButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Icon(ft.Icons.PERSON,
+                                        color=ft.Colors.WHITE, size=20),
+                                ft.Text("Clientes", size=16,
+                                        weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=8,
+                        ),
+                        width=110, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
                     ),
-                    width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    items=[
+                        ft.PopupMenuItem(
+                            "Gestión", data="gestionClientes", on_click=menu_item_click),
+                    ],
                 ),
-                items=[
-                    ft.PopupMenuItem(
-                        "Clientes", data="reportesClientes", on_click=menu_item_click),
-                    ft.PopupMenuItem("Ventas", data="reportesVentas",
-                                     on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Compras", data="reportesCompras", on_click=menu_item_click),
-                    ft.PopupMenuItem(
-                        "Proveedores", data="reportesProveedores", on_click=menu_item_click),
-                ],
-            )
-        ],
-        spacing=10,
-        alignment=ft.MainAxisAlignment.START,
-    )
+                ft.PopupMenuButton(
+                    content=ft.Container(
+                        content=ft.Row(
+                            controls=[
+                                ft.Icon(ft.Icons.BAR_CHART,
+                                        color=ft.Colors.WHITE, size=20),
+                                ft.Text("Reportes", size=16,
+                                        weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
+                            ],
+                            alignment=ft.MainAxisAlignment.CENTER,
+                            spacing=8,
+                        ),
+                        width=120, height=60, alignment=ft.Alignment(0, 0), bgcolor="#741717"
+                    ),
+                    items=[
+                        ft.PopupMenuItem(
+                            "Clientes", data="reportesClientes", on_click=menu_item_click),
+                        ft.PopupMenuItem("Ventas", data="reportesVentas",
+                                         on_click=menu_item_click),
+                        ft.PopupMenuItem(
+                            "Compras", data="reportesCompras", on_click=menu_item_click),
+                        ft.PopupMenuItem(
+                            "Proveedores", data="reportesProveedores", on_click=menu_item_click),
+                    ],
+                )
+            ],
+            spacing=10,
+            alignment=ft.MainAxisAlignment.START,
+        )
     page.add(
         ft.Column(
             controls=[
